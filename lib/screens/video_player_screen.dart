@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import '../providers/video_provider.dart';
 import '../models/video_source.dart';
+import '../providers/recent_play_provider.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   @override
@@ -24,6 +25,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     super.initState();
     _videoSource = context.read<VideoProvider>().currentVideo!;
     _initializePlayer();
+    if (_videoSource.currentVideo != null) {
+      context.read<RecentPlayProvider>().addRecentPlay(_videoSource.currentVideo!);
+    }
   }
 
   String _formatDuration(Duration duration) {
