@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/gestures.dart';
 import '../../providers/recent_play_provider.dart';
 import '../../providers/video_provider.dart';
 import '../video_player_screen.dart';
 import '../all_recent_plays_screen.dart';
 import '../all_sources_screen.dart';
 import '../../models/video_source.dart';
+
 class MediaLibraryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            title: Text('媒体库'),
-            floating: true,
-            snap: true,
-          ),
+          SliverAppBar(title: Text('媒体库'), floating: true, snap: true),
           SliverToBoxAdapter(
             child: Column(
               children: [
@@ -40,10 +38,11 @@ class MediaLibraryTab extends StatelessWidget {
             children: [
               Text('最近播放', style: TextStyle(fontSize: 18)),
               TextButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => AllRecentPlaysScreen()),
-                ),
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => AllRecentPlaysScreen()),
+                    ),
                 child: Text('全部'),
               ),
             ],
@@ -53,16 +52,46 @@ class MediaLibraryTab extends StatelessWidget {
           height: 200,
           child: Consumer<RecentPlayProvider>(
             builder: (context, provider, child) {
-              if (provider.limitedRecentPlays.isEmpty) {
-                return Center(child: Text('暂无播放记录'));
-              }
-              return ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: provider.limitedRecentPlays.length,
-                itemBuilder: (context, index) {
-                  final video = provider.limitedRecentPlays[index];
-                  return _buildVideoCard(context, video);
-                },
+              // if (provider.limitedRecentPlays.isEmpty) {
+              //   return Center(child: Text('暂无播放记录'));
+              // }
+              // return ListView.builder(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   scrollDirection: Axis.horizontal,
+              //   itemCount: provider.limitedRecentPlays.length,
+              //   itemBuilder: (context, index) {
+              //     final video = provider.limitedRecentPlays[index];
+              //     return _buildVideoCard(context, video);
+              //   },
+              // );
+              return ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  scrollbars: true,
+                  dragDevices: {
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.trackpad,
+                  },
+                ),
+                child: Scrollbar(
+                  thickness: 6.0,
+                  radius: Radius.circular(3.0),
+                  thumbVisibility: true,
+                  interactive: true,
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: provider.limitedRecentPlays.length,
+                    itemBuilder: (context, index) {
+                      final video = provider.limitedRecentPlays[index];
+                      return SizedBox(
+                        width: 200,
+                        child: _buildVideoCard(context, video),
+                      );
+                    },
+                  ),
+                ),
               );
             },
           ),
@@ -81,10 +110,11 @@ class MediaLibraryTab extends StatelessWidget {
             children: [
               Text('媒体库', style: TextStyle(fontSize: 18)),
               TextButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => AllSourcesScreen()),
-                ),
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => AllSourcesScreen()),
+                    ),
                 child: Text('全部'),
               ),
             ],

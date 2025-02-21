@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       title: '视频播放器',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
       ),
       home: MainScreen(),
     );
