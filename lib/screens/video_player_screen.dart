@@ -26,7 +26,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     _videoSource = context.read<VideoProvider>().currentVideo!;
     _initializePlayer();
     if (_videoSource.currentVideo != null) {
-      context.read<RecentPlayProvider>().addRecentPlay(_videoSource.currentVideo!);
+      context.read<RecentPlayProvider>().addRecentVideo(_videoSource.currentVideo!);
     }
   }
 

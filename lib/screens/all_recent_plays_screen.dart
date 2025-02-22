@@ -13,7 +13,7 @@ class AllRecentPlaysScreen extends StatelessWidget {
       ),
       body: Consumer<RecentPlayProvider>(
         builder: (context, provider, child) {
-          if (provider.recentPlays.isEmpty) {
+          if (provider.recentVideos.isEmpty) {
             return Center(child: Text('暂无播放记录'));
           }
           return GridView.builder(
@@ -24,9 +24,9 @@ class AllRecentPlaysScreen extends StatelessWidget {
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
-            itemCount: provider.recentPlays.length,
+            itemCount: provider.recentVideos.length,
             itemBuilder: (context, index) {
-              final video = provider.recentPlays[index];
+              final video = provider.recentVideos[index];
               final color = Colors.primaries[video.hashCode % Colors.primaries.length];
               
               return Card(
