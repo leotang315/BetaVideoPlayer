@@ -43,7 +43,7 @@ class ProfileTab extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        context.read<RecentPlayProvider>().clearRecentVideos();
+                        context.read<RecentPlayProvider>().clearRecentPlays();
                         Navigator.pop(context);
                       },
                       child: Text('确认'),
