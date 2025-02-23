@@ -4,6 +4,19 @@ enum SourceType {
   webdav,
 }
 
+class CardInfo {
+  final String title;
+  final String subtitle;
+  final String imgPath;
+  final double score;
+  CardInfo({
+    required this.title,
+    required this.subtitle,
+    required this.imgPath,
+    required this.score,
+  });
+}
+
 class VideoFile {
   final String name;
   final String path;

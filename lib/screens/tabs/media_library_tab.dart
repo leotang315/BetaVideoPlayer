@@ -10,21 +10,39 @@ import '../../models/video_source.dart';
 
 class MediaLibraryTab extends StatelessWidget {
   @override
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(title: Text('媒体库'), floating: true, snap: true),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                _buildRecentPlaysSection(context),
-                _buildSourcesSection(context),
-              ],
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          floating: true,
+          title: Row(children: [Image.asset('assets/logo.webp', height: 32)]),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                // TODO: 实现搜索功能
+              },
             ),
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                // TODO: 实现刷新功能
+              },
+            ),
+          ],
+        ),
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              _buildRecentPlaysSection(context),
+              _buildMoviesSection(context),
+              _buildTVShowsSection(context),
+              _buildOtherSection(context),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -97,6 +115,214 @@ class MediaLibraryTab extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildMoviesSection(BuildContext context) {
+    final show2 = [
+      CardInfo(
+        title: '动物王国大冒险',
+        subtitle: '共2季',
+        imgPath: 'assets/logo.webp',
+        score: 7.5,
+      ),
+      CardInfo(
+        title: '开口说英语',
+        subtitle: '共5季',
+        imgPath: 'assets/logo.webp',
+        score: 8.8,
+      ),
+      CardInfo(
+        title: '小鼠波波',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 7.5,
+      ),
+      CardInfo(
+        title: 'DIDI狗的一天',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 8.8,
+      ),
+    ];
+    return Consumer<VideoProvider>(
+      builder: (context, provider, child) {
+        return _buildSection(context, '电影', show2);
+      },
+    );
+  }
+
+  Widget _buildTVShowsSection(BuildContext context) {
+    final show2 = [
+      CardInfo(
+        title: '动物王国大冒险',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 7.5,
+      ),
+      CardInfo(
+        title: '开口说英语',
+        subtitle: '共5季',
+        imgPath: 'assets/logo.webp',
+        score: 8.8,
+      ),
+      CardInfo(
+        title: '小鼠波波',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 7.5,
+      ),
+      CardInfo(
+        title: 'DIDI狗的一天',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 8.8,
+      ),
+      CardInfo(
+        title: 'DIDI狗的2天',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 8.8,
+      ),
+    ];
+    return Consumer<VideoProvider>(
+      builder: (context, provider, child) {
+        return _buildSection(context, '电视剧', show2);
+      },
+    );
+  }
+
+  Widget _buildOtherSection(BuildContext context) {
+    final show2 = [
+      CardInfo(
+        title: '动物王国大冒险',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 7.5,
+      ),
+      CardInfo(
+        title: '开口说英语',
+        subtitle: '共5季',
+        imgPath: 'assets/logo.webp',
+        score: 8.8,
+      ),
+      CardInfo(
+        title: '小鼠波波',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 7.5,
+      ),
+      CardInfo(
+        title: 'DIDI狗的一天',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 8.8,
+      ),
+      CardInfo(
+        title: 'DIDI狗的2天',
+        subtitle: '共1季',
+        imgPath: 'assets/logo.webp',
+        score: 8.8,
+      ),
+    ];
+    return Consumer<VideoProvider>(
+      builder: (context, provider, child) {
+        return _buildSection(context, '其他', show2);
+      },
+    );
+  }
+
+  Widget _buildSection(
+    BuildContext context,
+    String category,
+    List<CardInfo> cards,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                category,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AllSourcesScreen()),
+                  );
+                },
+                child: Text(
+                  '全部 ${cards.length} >',
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 250,
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              scrollbars: true,
+              dragDevices: {
+                PointerDeviceKind.mouse,
+                PointerDeviceKind.touch,
+                PointerDeviceKind.trackpad,
+              },
+            ),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: cards.length,
+              itemBuilder: (context, index) {
+                return _buildCard(context, cards[index]);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCard(BuildContext context, CardInfo cardInfo) {
+    return Container(
+      width: 150,
+      margin: const EdgeInsets.only(right: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Icon(Icons.movie, size: 48, color: Colors.grey[400]),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            cardInfo.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 14),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            cardInfo.subtitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          ),
+        ],
+      ),
     );
   }
 
