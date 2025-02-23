@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/recent_play_provider.dart';
-import '../providers/video_provider.dart';
-import '../screens/video_player_screen.dart';
+import '../../providers/recent_play_provider.dart';
+import '../../providers/video_provider.dart';
 
 class AllRecentPlaysScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('播放历史'),
-      ),
+      appBar: AppBar(title: Text('播放历史')),
       body: Consumer<RecentPlayProvider>(
         builder: (context, provider, child) {
           if (provider.recentPlays.isEmpty) {
@@ -27,8 +24,9 @@ class AllRecentPlaysScreen extends StatelessWidget {
             itemCount: provider.recentPlays.length,
             itemBuilder: (context, index) {
               final video = provider.recentPlays[index];
-              final color = Colors.primaries[video.hashCode % Colors.primaries.length];
-              
+              final color =
+                  Colors.primaries[video.hashCode % Colors.primaries.length];
+
               return Card(
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
@@ -36,15 +34,15 @@ class AllRecentPlaysScreen extends StatelessWidget {
                     // 查找视频所属的 VideoSource
                     final videoProvider = context.read<VideoProvider>();
                     for (var source in videoProvider.videos) {
-                      int idx = source.playlist.indexWhere((v) => v.path == video.path);
+                      int idx = source.playlist.indexWhere(
+                        (v) => v.path == video.path,
+                      );
                       if (idx != -1) {
                         source.currentIndex = idx;
                         videoProvider.setCurrentVideo(source);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => VideoPlayerScreen(),
-                          ),
+                          MaterialPageRoute(builder: (context) => Text("data")),
                         );
                         break;
                       }
@@ -102,4 +100,4 @@ class AllRecentPlaysScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}

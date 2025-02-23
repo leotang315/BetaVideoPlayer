@@ -2,8 +2,9 @@ import 'package:beta_player/models/video_source.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/video_provider.dart';
-import '../source_dialog.dart';
+import '../common/video_source_dialog.dart';
 import '../../models/video_source.dart';
+
 class SourceLibraryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -13,10 +14,11 @@ class SourceLibraryTab extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => SourceDialog(),
-            ),
+            onPressed:
+                () => showDialog(
+                  context: context,
+                  builder: (context) => VideoSourceDialog(),
+                ),
           ),
         ],
       ),
@@ -29,10 +31,11 @@ class SourceLibraryTab extends StatelessWidget {
                 children: [
                   Text('暂无媒体库'),
                   ElevatedButton(
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => SourceDialog(),
-                    ),
+                    onPressed:
+                        () => showDialog(
+                          context: context,
+                          builder: (context) => VideoSourceDialog(),
+                        ),
                     child: Text('添加媒体库'),
                   ),
                 ],
@@ -69,4 +72,4 @@ class SourceLibraryTab extends StatelessWidget {
         return Icons.cloud;
     }
   }
-} 
+}

@@ -1,15 +1,15 @@
+import 'package:beta_player/widgets/video_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
+import '../../models/video_source.dart';
 import '../../providers/recent_play_provider.dart';
 import '../../providers/video_provider.dart';
-import '../video_player_screen.dart';
-import '../all_recent_plays_screen.dart';
-import '../all_sources_screen.dart';
-import '../../models/video_source.dart';
+import '../common/video_player_page.dart';
+import '../common/all_recent_plays_screen.dart';
+import '../common/all_video_page.dart';
 
 class MediaLibraryTab extends StatelessWidget {
-  @override
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -70,18 +70,6 @@ class MediaLibraryTab extends StatelessWidget {
           height: 200,
           child: Consumer<RecentPlayProvider>(
             builder: (context, provider, child) {
-              // if (provider.limitedRecentPlays.isEmpty) {
-              //   return Center(child: Text('暂无播放记录'));
-              // }
-              // return ListView.builder(
-              //   padding: EdgeInsets.symmetric(horizontal: 16),
-              //   scrollDirection: Axis.horizontal,
-              //   itemCount: provider.limitedRecentPlays.length,
-              //   itemBuilder: (context, index) {
-              //     final video = provider.limitedRecentPlays[index];
-              //     return _buildVideoCard(context, video);
-              //   },
-              // );
               return ScrollConfiguration(
                 behavior: ScrollConfiguration.of(context).copyWith(
                   scrollbars: true,
@@ -105,7 +93,7 @@ class MediaLibraryTab extends StatelessWidget {
                       final video = provider.limitedRecentPlays[index];
                       return SizedBox(
                         width: 200,
-                        child: _buildVideoCard(context, video),
+                        child: _buildMoviesSection(context),
                       );
                     },
                   ),
@@ -253,7 +241,9 @@ class MediaLibraryTab extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AllSourcesScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => AllVideoPage(category, cards),
+                    ),
                   );
                 },
                 child: Text(
@@ -280,7 +270,7 @@ class MediaLibraryTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: cards.length,
               itemBuilder: (context, index) {
-                return _buildCard(context, cards[index]);
+                return VideoCard(cards[index]);
               },
             ),
           ),
@@ -289,139 +279,102 @@ class MediaLibraryTab extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(BuildContext context, CardInfo cardInfo) {
-    return Container(
-      width: 150,
-      margin: const EdgeInsets.only(right: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Icon(Icons.movie, size: 48, color: Colors.grey[400]),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            cardInfo.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 14),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            cardInfo.subtitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildSourcesSection(BuildContext context) {
+  //   return Column(
+  //     children: [
+  //       Padding(
+  //         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Text('媒体库', style: TextStyle(fontSize: 18)),
+  //             TextButton(
+  //               onPressed:
+  //                   () => Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(builder: (_) => AllSourcesScreen()),
+  //                   ),
+  //               child: Text('全部'),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //       Consumer<VideoProvider>(
+  //         builder: (context, provider, child) {
+  //           if (provider.videos.isEmpty) {
+  //             return Center(child: Text('暂无媒体库'));
+  //           }
+  //           return ListView.builder(
+  //             shrinkWrap: true,
+  //             physics: NeverScrollableScrollPhysics(),
+  //             itemCount: provider.videos.length.clamp(0, 3),
+  //             itemBuilder: (context, index) {
+  //               final source = provider.videos[index];
+  //               return ListTile(
+  //                 leading: Icon(_getSourceIcon(source.type)),
+  //                 title: Text(source.name),
+  //                 subtitle: Text('${source.playlist.length} 个视频'),
+  //                 onTap: () {
+  //                   provider.setCurrentVideo(source);
+  //                   Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(
+  //                       builder: (context) => VideoPlayerScreen(),
+  //                     ),
+  //                   );
+  //                 },
+  //               );
+  //             },
+  //           );
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Widget _buildSourcesSection(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('媒体库', style: TextStyle(fontSize: 18)),
-              TextButton(
-                onPressed:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => AllSourcesScreen()),
-                    ),
-                child: Text('全部'),
-              ),
-            ],
-          ),
-        ),
-        Consumer<VideoProvider>(
-          builder: (context, provider, child) {
-            if (provider.videos.isEmpty) {
-              return Center(child: Text('暂无媒体库'));
-            }
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: provider.videos.length.clamp(0, 3),
-              itemBuilder: (context, index) {
-                final source = provider.videos[index];
-                return ListTile(
-                  leading: Icon(_getSourceIcon(source.type)),
-                  title: Text(source.name),
-                  subtitle: Text('${source.playlist.length} 个视频'),
-                  onTap: () {
-                    provider.setCurrentVideo(source);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VideoPlayerScreen(),
-                      ),
-                    );
-                  },
-                );
-              },
-            );
-          },
-        ),
-      ],
-    );
-  }
+  // Widget _buildVideoCard(BuildContext context, VideoFile video) {
+  //   return Card(
+  //     margin: EdgeInsets.all(8),
+  //     child: InkWell(
+  //       onTap: () {
+  //         // 处理视频播放
+  //       },
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Container(
+  //             width: 160,
+  //             height: 120,
+  //             color: Colors.grey[800],
+  //             child: Icon(Icons.play_circle_outline, size: 48),
+  //           ),
+  //           Padding(
+  //             padding: EdgeInsets.all(8),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Text(
+  //                   video.name,
+  //                   maxLines: 2,
+  //                   overflow: TextOverflow.ellipsis,
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildVideoCard(BuildContext context, VideoFile video) {
-    return Card(
-      margin: EdgeInsets.all(8),
-      child: InkWell(
-        onTap: () {
-          // 处理视频播放
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 160,
-              height: 120,
-              color: Colors.grey[800],
-              child: Icon(Icons.play_circle_outline, size: 48),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    video.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  IconData _getSourceIcon(SourceType type) {
-    switch (type) {
-      case SourceType.local:
-        return Icons.folder;
-      case SourceType.smb:
-        return Icons.computer;
-      case SourceType.webdav:
-        return Icons.cloud;
-    }
-  }
+  // IconData _getSourceIcon(SourceType type) {
+  //   switch (type) {
+  //     case SourceType.local:
+  //       return Icons.folder;
+  //     case SourceType.smb:
+  //       return Icons.computer;
+  //     case SourceType.webdav:
+  //       return Icons.cloud;
+  //   }
+  // }
 }

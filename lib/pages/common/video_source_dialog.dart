@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
-import '../models/video_source.dart';
-import '../providers/video_provider.dart';
+import '../../models/video_source.dart';
+import '../../providers/video_provider.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
-class SourceDialog extends StatefulWidget {
+class VideoSourceDialog extends StatefulWidget {
   @override
-  _SourceDialogState createState() => _SourceDialogState();
+  _VideoSourceDialogState createState() => _VideoSourceDialogState();
 }
 
-class _SourceDialogState extends State<SourceDialog> {
+class _VideoSourceDialogState extends State<VideoSourceDialog> {
   final _formKey = GlobalKey<FormState>();
   final _pathController = TextEditingController();
   SourceType _sourceType = SourceType.local;
@@ -32,12 +32,13 @@ class _SourceDialogState extends State<SourceDialog> {
             children: [
               DropdownButtonFormField<SourceType>(
                 value: _sourceType,
-                items: SourceType.values.map((type) {
-                  return DropdownMenuItem(
-                    value: type,
-                    child: Text(type.toString().split('.').last),
-                  );
-                }).toList(),
+                items:
+                    SourceType.values.map((type) {
+                      return DropdownMenuItem(
+                        value: type,
+                        child: Text(type.toString().split('.').last),
+                      );
+                    }).toList(),
                 onChanged: (value) {
                   setState(() {
                     _sourceType = value!;
@@ -47,8 +48,7 @@ class _SourceDialogState extends State<SourceDialog> {
               TextFormField(
                 decoration: InputDecoration(labelText: '名称'),
                 onSaved: (value) => _name = value!,
-                validator: (value) =>
-                    value?.isEmpty ?? true ? '请输入名称' : null,
+                validator: (value) => value?.isEmpty ?? true ? '请输入名称' : null,
               ),
               if (_sourceType != SourceType.local)
                 TextFormField(
@@ -68,8 +68,8 @@ class _SourceDialogState extends State<SourceDialog> {
                       controller: _pathController,
                       decoration: InputDecoration(labelText: '路径'),
                       onSaved: (value) => _path = value!,
-                      validator: (value) =>
-                          value?.isEmpty ?? true ? '请输入路径' : null,
+                      validator:
+                          (value) => value?.isEmpty ?? true ? '请输入路径' : null,
                     ),
                   ),
                   if (_sourceType == SourceType.local)
@@ -84,21 +84,15 @@ class _SourceDialogState extends State<SourceDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('取消'),
-        ),
-        ElevatedButton(
-          onPressed: _submit,
-          child: Text('添加'),
-        ),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text('取消')),
+        ElevatedButton(onPressed: _submit, child: Text('添加')),
       ],
     );
   }
 
   Future<void> _pickFile() async {
     String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-    
+
     if (selectedDirectory != null) {
       setState(() {
         _path = selectedDirectory;
@@ -112,17 +106,16 @@ class _SourceDialogState extends State<SourceDialog> {
       _formKey.currentState?.save();
 
       List<VideoFile> playlist = [];
-      
+
       if (_sourceType == SourceType.local) {
         Directory dir = Directory(_path);
         await for (var entity in dir.list(recursive: true)) {
           if (entity is File) {
             String ext = path.extension(entity.path).toLowerCase();
             if (['.mp4', '.avi', '.mkv', '.mov', '.wmv'].contains(ext)) {
-              playlist.add(VideoFile(
-                name: path.basename(entity.path),
-                path: entity.path,
-              ));
+              playlist.add(
+                VideoFile(name: path.basename(entity.path), path: entity.path),
+              );
             }
           }
         }
@@ -133,12 +126,10 @@ class _SourceDialogState extends State<SourceDialog> {
         path: _path,
         type: _sourceType,
         playlist: playlist,
-        credentials: _sourceType != SourceType.local
-            ? {
-                'username': _username!,
-                'password': _password!,
-              }
-            : null,
+        credentials:
+            _sourceType != SourceType.local
+                ? {'username': _username!, 'password': _password!}
+                : null,
       );
 
       context.read<VideoProvider>().addVideo(video);
@@ -151,4 +142,4 @@ class _SourceDialogState extends State<SourceDialog> {
     _pathController.dispose();
     super.dispose();
   }
-} 
+}

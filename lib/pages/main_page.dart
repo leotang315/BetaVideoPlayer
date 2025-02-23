@@ -3,18 +3,14 @@ import 'tabs/media_library_tab.dart';
 import 'tabs/source_library_tab.dart';
 import 'tabs/profile_tab.dart';
 
-class MainScreen extends StatefulWidget {
+class MainPage extends StatefulWidget {
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
-  final _pages = [
-    MediaLibraryTab(),
-    SourceLibraryTab(),
-    ProfileTab(),
-  ];
+  final _pages = [MediaLibraryTab(), SourceLibraryTab(), ProfileTab()];
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +24,10 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.video_library),
             label: '媒体库',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.folder),
-            label: '资源库',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '我的',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.folder), label: '资源库'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: '我的'),
         ],
       ),
     );
   }
-} 
+}

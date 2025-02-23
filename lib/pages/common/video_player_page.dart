@@ -3,16 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
-import '../providers/video_provider.dart';
-import '../models/video_source.dart';
-import '../providers/recent_play_provider.dart';
+import '../../providers/video_provider.dart';
+import '../../models/video_source.dart';
+import '../../providers/recent_play_provider.dart';
 
-class VideoPlayerScreen extends StatefulWidget {
+class VideoPlayerPage extends StatefulWidget {
   @override
-  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
+  _VideoPlayerPageState createState() => _VideoPlayerPageState();
 }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+class _VideoPlayerPageState extends State<VideoPlayerPage> {
   late VideoPlayerController _controller;
   bool _isInitialized = false;
   late VideoSource _videoSource;
@@ -26,13 +26,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     _videoSource = context.read<VideoProvider>().currentVideo!;
     _initializePlayer();
     if (_videoSource.currentVideo != null) {
-      context.read<RecentPlayProvider>().addRecentPlay(_videoSource.currentVideo!);
+      context.read<RecentPlayProvider>().addRecentPlay(
+        _videoSource.currentVideo!,
+      );
     }
   }
 
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String hours = duration.inHours > 0 ? '${twoDigits(duration.inHours)}:' : '';
+    String hours =
+        duration.inHours > 0 ? '${twoDigits(duration.inHours)}:' : '';
     String minutes = twoDigits(duration.inMinutes.remainder(60));
     String seconds = twoDigits(duration.inSeconds.remainder(60));
     return '$hours$minutes:$seconds';
@@ -44,7 +47,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     switch (_videoSource.type) {
       case SourceType.local:
         _controller = VideoPlayerController.file(
-          File(_videoSource.currentVideo!.path)
+          File(_videoSource.currentVideo!.path),
         );
         break;
       case SourceType.smb:
@@ -112,10 +115,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   onPressed: _videoSource.hasPrevious ? _playPrevious : null,
                 ),
                 IconButton(
-                  icon: Icon(_controller.value.isPlaying ? Icons.pause : Icons.play_arrow),
-                  onPressed: () => setState(() {
-                    _controller.value.isPlaying ? _controller.pause() : _controller.play();
-                  }),
+                  icon: Icon(
+                    _controller.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                  ),
+                  onPressed:
+                      () => setState(() {
+                        _controller.value.isPlaying
+                            ? _controller.pause()
+                            : _controller.play();
+                      }),
                 ),
                 IconButton(
                   icon: Icon(Icons.skip_next),
@@ -160,23 +170,26 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 // Settings
                 PopupMenuButton(
                   icon: Icon(Icons.settings),
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Text('画质设置'),
-                      onTap: () {
-                        // Implement quality settings
-                      },
-                    ),
-                    PopupMenuItem(
-                      child: Text('字幕设置'),
-                      onTap: () {
-                        // Implement subtitle settings
-                      },
-                    ),
-                  ],
+                  itemBuilder:
+                      (context) => [
+                        PopupMenuItem(
+                          child: Text('画质设置'),
+                          onTap: () {
+                            // Implement quality settings
+                          },
+                        ),
+                        PopupMenuItem(
+                          child: Text('字幕设置'),
+                          onTap: () {
+                            // Implement subtitle settings
+                          },
+                        ),
+                      ],
                 ),
                 IconButton(
-                  icon: Icon(_isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen),
+                  icon: Icon(
+                    _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+                  ),
                   onPressed: _toggleFullScreen,
                 ),
               ],
@@ -220,33 +233,35 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         return true;
       },
       child: Scaffold(
-        appBar: _isFullScreen ? null : AppBar(
-          title: Text(_videoSource.currentVideo?.name ?? ''),
-        ),
+        appBar:
+            _isFullScreen
+                ? null
+                : AppBar(title: Text(_videoSource.currentVideo?.name ?? '')),
         body: Center(
-          child: _isInitialized
-              ? GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (_controller.value.isPlaying) {
-                        _controller.pause();
-                      } else {
-                        _controller.play();
-                      }
-                    });
-                  },
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
-                      ),
-                      _buildControls(),
-                    ],
-                  ),
-                )
-              : CircularProgressIndicator(),
+          child:
+              _isInitialized
+                  ? GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (_controller.value.isPlaying) {
+                          _controller.pause();
+                        } else {
+                          _controller.play();
+                        }
+                      });
+                    },
+                    child: Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        AspectRatio(
+                          aspectRatio: _controller.value.aspectRatio,
+                          child: VideoPlayer(_controller),
+                        ),
+                        _buildControls(),
+                      ],
+                    ),
+                  )
+                  : CircularProgressIndicator(),
         ),
       ),
     );
