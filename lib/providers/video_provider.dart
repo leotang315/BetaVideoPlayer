@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../models/video_source.dart';
+import '../models/video_source1b.dart';
 
 class VideoProvider with ChangeNotifier {
   List<VideoSource> _videos = [];
@@ -25,4 +25,4 @@ class VideoProvider with ChangeNotifier {
     }
     notifyListeners();
   }
-} 
+}

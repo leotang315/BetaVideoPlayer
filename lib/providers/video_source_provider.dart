@@ -1,35 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../models/video_source.dart';
 
 class VideoSourceProvider extends ChangeNotifier {
-  final List<VideoSourceBase> _videoSources = [];
+  late Box<VideoSourceBase> _sourceBox;
 
-  // 获取所有视频源
-  List<VideoSourceBase> get videoSources => _videoSources;
-
-  // 添加视频源
-  void addVideoSource(VideoSourceBase source) {
-    _videoSources.add(source);
-    notifyListeners(); // 通知监听器
+  Future<void> init() async {
+    _sourceBox = await Hive.openBox<VideoSourceBase>('video_sources');
   }
 
-  // 删除视频源
-  void removeVideoSource(VideoSourceBase source) {
-    _videoSources.remove(source);
-    notifyListeners(); // 通知监听器
+  List<VideoSourceBase> get videoSources => _sourceBox.values.toList();
+
+  Future<void> addVideoSource(VideoSourceBase source) async {
+    await _sourceBox.add(source);
+    notifyListeners();
   }
 
-  // 根据名称查找视频源
+  Future<void> removeVideoSource(VideoSourceBase source) async {
+    final index = _sourceBox.values.toList().indexOf(source);
+    if (index != -1) {
+      await _sourceBox.deleteAt(index);
+      notifyListeners();
+    }
+  }
+
   VideoSourceBase? findVideoSourceByName(String name) {
     try {
-      return _videoSources.firstWhere((source) => source.name == name);
+      return _sourceBox.values.firstWhere((source) => source.name == name);
     } catch (e) {
       return null;
     }
   }
 
-  // 根据类型过滤视频源
   List<VideoSourceBase> getVideoSourcesByType(VideoSourceType type) {
-    return _videoSources.where((source) => source.type == type).toList();
+    return _sourceBox.values.where((source) => source.type == type).toList();
   }
 }

@@ -1,22 +1,46 @@
-enum VideoSourceType { localStorage, networkStorage, cloudStorage }
+import 'package:hive/hive.dart';
 
+part 'video_source.g.dart';
+
+@HiveType(typeId: 0)
+enum VideoSourceType {
+  @HiveField(0)
+  localStorage,
+  @HiveField(1)
+  networkStorage,
+  @HiveField(2)
+  cloudStorage,
+}
+
+@HiveType(typeId: 1)
 class VideoSourceBase {
+  @HiveField(0)
   final VideoSourceType type;
+  @HiveField(1)
   final String name;
 
   VideoSourceBase(this.type, this.name);
 }
 
+@HiveType(typeId: 2)
 class VideoSourceLocalPath extends VideoSourceBase {
+  @HiveField(2)
   final String path;
+
   VideoSourceLocalPath(super.type, super.name, this.path);
 }
 
+@HiveType(typeId: 3)
 class VideoSourceSmb extends VideoSourceBase {
+  @HiveField(2)
   final String address;
+  @HiveField(3)
   final String user;
+  @HiveField(4)
   final String password;
+  @HiveField(5)
   final String path;
+
   VideoSourceSmb(
     super.type,
     super.name,
@@ -27,11 +51,17 @@ class VideoSourceSmb extends VideoSourceBase {
   );
 }
 
+@HiveType(typeId: 4)
 class VideoSourceWebDav extends VideoSourceBase {
+  @HiveField(2)
   final String address;
+  @HiveField(3)
   final String user;
+  @HiveField(4)
   final String password;
+  @HiveField(5)
   final String path;
+
   VideoSourceWebDav(
     super.type,
     super.name,
@@ -42,52 +72,7 @@ class VideoSourceWebDav extends VideoSourceBase {
   );
 }
 
+@HiveType(typeId: 5)
 class VideoSourceBaiduCloud extends VideoSourceBase {
   VideoSourceBaiduCloud(super.type, super.name);
-}
-
-enum SourceType { local, smb, webdav }
-
-class CardInfo {
-  final String title;
-  final String subtitle;
-  final String imgPath;
-  final double score;
-  CardInfo({
-    required this.title,
-    required this.subtitle,
-    required this.imgPath,
-    required this.score,
-  });
-}
-
-class VideoFile {
-  final String name;
-  final String path;
-
-  VideoFile({required this.name, required this.path});
-}
-
-class VideoSource {
-  final String name;
-  final String path;
-  final SourceType type;
-  final Map<String, String>? credentials;
-  final List<VideoFile> playlist;
-  int currentIndex;
-
-  VideoSource({
-    required this.name,
-    required this.path,
-    required this.type,
-    this.credentials,
-    this.playlist = const [],
-    this.currentIndex = 0,
-  });
-
-  VideoFile? get currentVideo =>
-      playlist.isNotEmpty ? playlist[currentIndex] : null;
-
-  bool get hasNext => currentIndex < playlist.length - 1;
-  bool get hasPrevious => currentIndex > 0;
 }
