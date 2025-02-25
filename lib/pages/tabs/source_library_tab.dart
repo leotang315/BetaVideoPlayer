@@ -1,9 +1,9 @@
-import 'package:beta_player/models/video_source.dart';
+import 'package:beta_player/models/video_sot.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/video_provider.dart';
 import '../common/video_source_dialog.dart';
-import '../../models/video_source.dart';
+import '../../models/video_sot.dart';
 
 class SourceLibraryTab extends StatelessWidget {
   @override

@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-
+import 'package:uuid/uuid.dart';
 part 'video_source.g.dart';
 
 @HiveType(typeId: 0)
@@ -18,13 +18,14 @@ class VideoSourceBase {
   final VideoSourceType type;
   @HiveField(1)
   final String name;
-
-  VideoSourceBase(this.type, this.name);
+  @HiveField(2)
+  final String id;
+  VideoSourceBase(this.type, this.name) : id = Uuid().v4(); // 使用uuid生成唯一id
 }
 
 @HiveType(typeId: 2)
 class VideoSourceLocalPath extends VideoSourceBase {
-  @HiveField(2)
+  @HiveField(10)
   final String path;
 
   VideoSourceLocalPath(super.type, super.name, this.path);
@@ -32,13 +33,13 @@ class VideoSourceLocalPath extends VideoSourceBase {
 
 @HiveType(typeId: 3)
 class VideoSourceSmb extends VideoSourceBase {
-  @HiveField(2)
+  @HiveField(10)
   final String address;
-  @HiveField(3)
+  @HiveField(11)
   final String user;
-  @HiveField(4)
+  @HiveField(12)
   final String password;
-  @HiveField(5)
+  @HiveField(13)
   final String path;
 
   VideoSourceSmb(
@@ -53,13 +54,13 @@ class VideoSourceSmb extends VideoSourceBase {
 
 @HiveType(typeId: 4)
 class VideoSourceWebDav extends VideoSourceBase {
-  @HiveField(2)
+  @HiveField(10)
   final String address;
-  @HiveField(3)
+  @HiveField(11)
   final String user;
-  @HiveField(4)
+  @HiveField(12)
   final String password;
-  @HiveField(5)
+  @HiveField(13)
   final String path;
 
   VideoSourceWebDav(
