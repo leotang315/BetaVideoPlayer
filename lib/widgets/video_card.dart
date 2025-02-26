@@ -1,5 +1,6 @@
-import 'package:beta_player/models/video_source.dart';
 import 'package:flutter/material.dart';
+
+import '../models/video_sot.dart';
 
 class VideoCard extends StatelessWidget {
   final CardInfo cardInfo;

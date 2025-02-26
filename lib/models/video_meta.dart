@@ -1,55 +1,106 @@
 import 'package:hive/hive.dart';
+import 'video_file.dart';
+part 'video_meta.g.dart';
 
-class VideoMeta {
-  final String title;
-  final String overview;
-  final String posterPath;
-  final String rate;
-  final String releaseDate;
-  final String path;
-
-  VideoMeta(
-    this.title,
-    this.overview,
-    this.posterPath,
-    this.rate,
-    this.releaseDate,
-    this.path,
-  );
+@HiveType(typeId: 7)
+enum VideoType {
+  @HiveField(0)
+  movie,
+  @HiveField(1)
+  tvShow,
+  @HiveField(2)
+  other,
 }
 
+@HiveType(typeId: 8)
 class VideoMetadata {
-  final String title; // 电影或电视剧的名称
-  final String overview; // 简介
-  final String posterUrl; // 海报图 URL
-  final String backdropUrl; // 背景图 URL
-  final double rating; // 评分
-  final String releaseDate; // 上映日期或首播日期
-  final String filePath; // 本地视频文件路径
-  final bool isTVShow; // 是否为电视剧
-  final List<Season>? seasons; // 电视剧的季信息
+  @HiveField(0)
+  final VideoType type;
 
-  VideoMetadata({
+  @HiveField(1)
+  final String title;
+
+  @HiveField(2)
+  final String overview;
+
+  @HiveField(3)
+  final String posterUrl;
+
+  @HiveField(4)
+  final String backdropUrl;
+
+  @HiveField(5)
+  final double rating;
+
+  @HiveField(6)
+  final String releaseDate;
+
+  @HiveField(7)
+  const VideoMetadata({
+    required this.type,
     required this.title,
     required this.overview,
     required this.posterUrl,
     required this.backdropUrl,
     required this.rating,
     required this.releaseDate,
-    required this.filePath,
-    this.isTVShow = false,
-    this.seasons,
   });
 }
 
-class Season {
-  final int seasonNumber; // 季号
-  final String name; // 季名称
-  final String overview; // 季简介
-  final String posterUrl; // 季海报图 URL
-  final List<Episode> episodes; // 集信息
+@HiveType(typeId: 9)
+class MovieMetadata extends VideoMetadata {
+  @HiveField(10)
+  final VideoFile videoFile;
 
-  Season({
+  @HiveField(11)
+  final int runtime;
+
+  const MovieMetadata({
+    required super.title,
+    required super.overview,
+    required super.posterUrl,
+    required super.backdropUrl,
+    required super.rating,
+    required super.releaseDate,
+    required this.videoFile,
+    required this.runtime,
+  }) : super(type: VideoType.movie);
+}
+
+@HiveType(typeId: 10)
+class TVShowMetadata extends VideoMetadata {
+  @HiveField(10)
+  final List<Season> seasons;
+
+  const TVShowMetadata({
+    required super.title,
+    required super.overview,
+    required super.posterUrl,
+    required super.backdropUrl,
+    required super.rating,
+    required super.releaseDate,
+    required this.seasons,
+  }) : super(type: VideoType.tvShow);
+}
+
+@HiveType(typeId: 11)
+class Season {
+  @HiveField(0)
+  final int seasonNumber;
+
+  @HiveField(1)
+  final String name;
+
+  @HiveField(2)
+  final String overview;
+
+  @HiveField(3)
+  final String posterUrl;
+
+  @HiveField(4)
+  final List<Episode> episodes;
+
+  const Season({
     required this.seasonNumber,
     required this.name,
     required this.overview,
@@ -58,16 +109,28 @@ class Season {
   });
 }
 
+@HiveType(typeId: 12)
 class Episode {
-  final int episodeNumber; // 集号
-  final String name; // 集名称
-  final String overview; // 集简介
-  final String stillUrl; // 集截图 URL
+  @HiveField(0)
+  final int episodeNumber;
 
-  Episode({
+  @HiveField(1)
+  final String name;
+
+  @HiveField(2)
+  final String overview;
+
+  @HiveField(3)
+  final String stillUrl;
+
+  @HiveField(4)
+  final VideoFile videoFile;
+
+  const Episode({
     required this.episodeNumber,
     required this.name,
     required this.overview,
     required this.stillUrl,
+    required this.videoFile,
   });
 }

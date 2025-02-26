@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
-import '../../models/video_source.dart';
+import '../../models/video_sot.dart';
 import '../../providers/video_provider.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;

@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
+import '../../models/video_sot.dart';
 import '../../providers/video_provider.dart';
-import '../../models/video_source.dart';
 import '../../providers/recent_play_provider.dart';
 
 class VideoPlayerPage extends StatefulWidget {

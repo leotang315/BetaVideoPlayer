@@ -25,11 +25,13 @@ class VideoSourceBaseAdapter extends TypeAdapter<VideoSourceBase> {
   @override
   void write(BinaryWriter writer, VideoSourceBase obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.id);
   }
 
   @override
@@ -56,20 +58,22 @@ class VideoSourceLocalPathAdapter extends TypeAdapter<VideoSourceLocalPath> {
     return VideoSourceLocalPath(
       fields[0] as VideoSourceType,
       fields[1] as String,
-      fields[2] as String,
+      fields[10] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, VideoSourceLocalPath obj) {
     writer
-      ..writeByte(3)
-      ..writeByte(2)
+      ..writeByte(4)
+      ..writeByte(10)
       ..write(obj.path)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.id);
   }
 
   @override
@@ -96,29 +100,31 @@ class VideoSourceSmbAdapter extends TypeAdapter<VideoSourceSmb> {
     return VideoSourceSmb(
       fields[0] as VideoSourceType,
       fields[1] as String,
-      fields[2] as String,
-      fields[3] as String,
-      fields[4] as String,
-      fields[5] as String,
+      fields[10] as String,
+      fields[11] as String,
+      fields[12] as String,
+      fields[13] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, VideoSourceSmb obj) {
     writer
-      ..writeByte(6)
-      ..writeByte(2)
+      ..writeByte(7)
+      ..writeByte(10)
       ..write(obj.address)
-      ..writeByte(3)
+      ..writeByte(11)
       ..write(obj.user)
-      ..writeByte(4)
+      ..writeByte(12)
       ..write(obj.password)
-      ..writeByte(5)
+      ..writeByte(13)
       ..write(obj.path)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.id);
   }
 
   @override
@@ -145,29 +151,31 @@ class VideoSourceWebDavAdapter extends TypeAdapter<VideoSourceWebDav> {
     return VideoSourceWebDav(
       fields[0] as VideoSourceType,
       fields[1] as String,
-      fields[2] as String,
-      fields[3] as String,
-      fields[4] as String,
-      fields[5] as String,
+      fields[10] as String,
+      fields[11] as String,
+      fields[12] as String,
+      fields[13] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, VideoSourceWebDav obj) {
     writer
-      ..writeByte(6)
-      ..writeByte(2)
+      ..writeByte(7)
+      ..writeByte(10)
       ..write(obj.address)
-      ..writeByte(3)
+      ..writeByte(11)
       ..write(obj.user)
-      ..writeByte(4)
+      ..writeByte(12)
       ..write(obj.password)
-      ..writeByte(5)
+      ..writeByte(13)
       ..write(obj.path)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.id);
   }
 
   @override
@@ -200,11 +208,13 @@ class VideoSourceBaiduCloudAdapter extends TypeAdapter<VideoSourceBaiduCloud> {
   @override
   void write(BinaryWriter writer, VideoSourceBaiduCloud obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.id);
   }
 
   @override

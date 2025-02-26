@@ -2,7 +2,7 @@ import 'package:beta_player/providers/video_provider.dart';
 import 'package:beta_player/widgets/video_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:beta_player/models/video_source.dart';
+import '../../models/video_sot.dart';
 
 class AllVideoPage extends StatelessWidget {
   AllVideoPage(String category, List<CardInfo> cards)

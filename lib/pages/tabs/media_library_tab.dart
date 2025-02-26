@@ -2,7 +2,7 @@ import 'package:beta_player/widgets/video_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
-import '../../models/video_source1b.dart';
+import '../../models/video_sot.dart';
 import '../../providers/recent_play_provider.dart';
 import '../../providers/video_provider.dart';
 import '../common/video_player_page.dart';

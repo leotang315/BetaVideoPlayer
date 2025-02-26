@@ -2,11 +2,16 @@ import 'package:beta_player/providers/recent_play_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fvp/fvp.dart' as fvp;
+import 'models/video_file.dart';
+import 'models/video_meta.dart';
 import 'models/video_source.dart';
-import 'providers/video_provider.dart';
+
 import 'pages/main_page.dart';
 import 'providers/video_source_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'providers/video_provider.dart';
+import 'providers/video_file_provider.dart';
+import 'providers/video_meta_provider.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -18,10 +23,21 @@ void main() async {
   Hive.registerAdapter(VideoSourceSmbAdapter());
   Hive.registerAdapter(VideoSourceWebDavAdapter());
   Hive.registerAdapter(VideoSourceBaiduCloudAdapter());
+  Hive.registerAdapter(VideoFileAdapter());
+  Hive.registerAdapter(VideoTypeAdapter());
+  Hive.registerAdapter(VideoMetadataAdapter());
+  Hive.registerAdapter(MovieMetadataAdapter());
+  Hive.registerAdapter(TVShowMetadataAdapter());
+  Hive.registerAdapter(SeasonAdapter());
+  Hive.registerAdapter(EpisodeAdapter());
 
-  // Initialize provider
+  // Initialize providers
   final videoSourceProvider = VideoSourceProvider();
+  final videoFileProvider = VideoFileProvider();
+  final videoMetaProvider = VideoMetaProvider();
   await videoSourceProvider.init();
+  await videoFileProvider.init();
+  await videoMetaProvider.init();
 
   fvp.registerWith();
   runApp(
@@ -32,6 +48,8 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => RecentPlayProvider(),
         ), // 添加 RecentPlayProvider
+        ChangeNotifierProvider(create: (_) => VideoFileProvider()),
+        ChangeNotifierProvider(create: (_) => VideoMetaProvider()),
       ],
       child: MyApp(),
     ),
