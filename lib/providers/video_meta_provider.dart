@@ -111,4 +111,11 @@ class VideoMetaProvider extends ChangeNotifier {
       ),
     ];
   }
+
+  Future<void> clear() async {
+    await _movieBox.clear();
+    await _tvShowBox.clear();
+    await _movieBox.close();
+    await _tvShowBox.close();
+  }
 }

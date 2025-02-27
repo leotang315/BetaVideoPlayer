@@ -43,13 +43,13 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider.value(value: videoSourceProvider),
+        ChangeNotifierProvider.value(value: videoFileProvider),
+        ChangeNotifierProvider.value(value: videoMetaProvider),
         ChangeNotifierProvider(create: (_) => VideoProvider()),
-        ChangeNotifierProvider(create: (_) => VideoSourceProvider()),
         ChangeNotifierProvider(
           create: (_) => RecentPlayProvider(),
         ), // 添加 RecentPlayProvider
-        ChangeNotifierProvider(create: (_) => VideoFileProvider()),
-        ChangeNotifierProvider(create: (_) => VideoMetaProvider()),
       ],
       child: MyApp(),
     ),

@@ -35,4 +35,9 @@ class VideoSourceProvider extends ChangeNotifier {
   List<VideoSourceBase> getVideoSourcesByType(VideoSourceType type) {
     return _sourceBox.values.where((source) => source.type == type).toList();
   }
+
+  Future<void> clear() async {
+    await _sourceBox.clear();
+    await _sourceBox.close();
+  }
 }

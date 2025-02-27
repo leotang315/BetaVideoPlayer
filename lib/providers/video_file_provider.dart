@@ -50,4 +50,10 @@ class VideoFileProvider extends ChangeNotifier {
     final updatedFile = file.copyWith();
     await updateVideoFile(file, updatedFile);
   }
+
+  // 用于测试的清理方法
+  Future<void> clear() async {
+    await _fileBox.clear();
+    await _fileBox.close();
+  }
 }

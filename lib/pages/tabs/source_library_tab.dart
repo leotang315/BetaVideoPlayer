@@ -1,75 +1,131 @@
 import 'package:beta_player/models/video_sot.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/video_provider.dart';
-import '../common/video_source_dialog.dart';
-import '../../models/video_sot.dart';
+import '../../models/video_source.dart';
+import '../../providers/video_source_provider.dart';
+import '../common/video_source_add_dialog.dart';
+import '../common/video_source_options_dialog.dart';
 
 class SourceLibraryTab extends StatelessWidget {
+  const SourceLibraryTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('资源库'),
+        title: const Text('资源库'),
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
-            onPressed:
-                () => showDialog(
-                  context: context,
-                  builder: (context) => VideoSourceDialog(),
-                ),
+            icon: const Icon(Icons.add),
+            onPressed: () => _showAddSourceDialog(context),
           ),
         ],
       ),
-      body: Consumer<VideoProvider>(
+      body: Consumer<VideoSourceProvider>(
         builder: (context, provider, child) {
-          if (provider.videos.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('暂无媒体库'),
-                  ElevatedButton(
-                    onPressed:
-                        () => showDialog(
-                          context: context,
-                          builder: (context) => VideoSourceDialog(),
-                        ),
-                    child: Text('添加媒体库'),
-                  ),
-                ],
-              ),
-            );
-          }
-          return ListView.builder(
-            itemCount: provider.videos.length,
-            itemBuilder: (context, index) {
-              final source = provider.videos[index];
-              return ListTile(
-                leading: Icon(_getSourceIcon(source.type)),
-                title: Text(source.name),
-                subtitle: Text('${source.playlist.length} 个视频'),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () => provider.removeVideo(source),
+          final localSources = provider.getVideoSourcesByType(
+            VideoSourceType.localStorage,
+          );
+          final networkSources = provider.getVideoSourcesByType(
+            VideoSourceType.networkStorage,
+          );
+
+          final cloudSources = provider.getVideoSourcesByType(
+            VideoSourceType.cloudStorage,
+          );
+
+          return ListView(
+            children: [
+              if (localSources.isNotEmpty) ...[
+                _buildSourceTypeHeader('本地目录'),
+                ...localSources.map(
+                  (source) => _buildSourceItem(context, source),
                 ),
-              );
-            },
+              ],
+              if (networkSources.isNotEmpty) ...[
+                _buildSourceTypeHeader('百度网盘'),
+                ...networkSources.map(
+                  (source) => _buildSourceItem(context, source),
+                ),
+              ],
+              if (cloudSources.isNotEmpty) ...[
+                _buildSourceTypeHeader('百度网盘'),
+                ...cloudSources.map(
+                  (source) => _buildSourceItem(context, source),
+                ),
+              ],
+            ],
           );
         },
       ),
     );
   }
 
-  IconData _getSourceIcon(SourceType type) {
+  Widget _buildSourceTypeHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.black54,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSourceItem(BuildContext context, VideoSourceBase source) {
+    return ListTile(
+      leading: _getSourceIcon(source.type),
+      title: Text(source.name),
+      trailing: IconButton(
+        icon: const Icon(Icons.more_horiz),
+        onPressed: () => _showSourceOptions(context, source),
+      ),
+    );
+  }
+
+  Widget _getSourceIcon(VideoSourceType type) {
+    IconData iconData;
+    Color iconColor;
+
     switch (type) {
-      case SourceType.local:
-        return Icons.folder;
-      case SourceType.smb:
-        return Icons.computer;
-      case SourceType.webdav:
-        return Icons.cloud;
+      case VideoSourceType.localStorage:
+        iconData = Icons.folder;
+        iconColor = Colors.blue;
+        break;
+      case VideoSourceType.networkStorage:
+        iconData = Icons.computer;
+        iconColor = Colors.green;
+        break;
+      case VideoSourceType.cloudStorage:
+        iconData = Icons.cloud;
+        iconColor = Colors.orange;
+        break;
     }
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: iconColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(iconData, color: iconColor),
+    );
+  }
+
+  void _showAddSourceDialog(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const VideoSourceTypeDialog()),
+    );
+  }
+
+  void _showSourceOptions(BuildContext context, VideoSourceBase source) {
+    showDialog(
+      context: context,
+      builder: (context) => VideoSourceOptionsDialog(source: source),
+    );
   }
 }
