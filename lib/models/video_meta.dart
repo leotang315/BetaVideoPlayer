@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 import 'video_file.dart';
 part 'video_meta.g.dart';
 
-@HiveType(typeId: 7)
+@HiveType(typeId: 20)
 enum VideoType {
   @HiveField(0)
   movie,
@@ -12,7 +12,7 @@ enum VideoType {
   other,
 }
 
-@HiveType(typeId: 8)
+@HiveType(typeId: 21)
 class VideoMetadata {
   @HiveField(0)
   final VideoType type;
@@ -47,7 +47,7 @@ class VideoMetadata {
   });
 }
 
-@HiveType(typeId: 9)
+@HiveType(typeId: 22)
 class MovieMetadata extends VideoMetadata {
   @HiveField(10)
   final VideoFile videoFile;
@@ -67,7 +67,7 @@ class MovieMetadata extends VideoMetadata {
   }) : super(type: VideoType.movie);
 }
 
-@HiveType(typeId: 10)
+@HiveType(typeId: 23)
 class TVShowMetadata extends VideoMetadata {
   @HiveField(10)
   final List<Season> seasons;
@@ -83,7 +83,7 @@ class TVShowMetadata extends VideoMetadata {
   }) : super(type: VideoType.tvShow);
 }
 
-@HiveType(typeId: 11)
+@HiveType(typeId: 24)
 class Season {
   @HiveField(0)
   final int seasonNumber;
@@ -109,7 +109,7 @@ class Season {
   });
 }
 
-@HiveType(typeId: 12)
+@HiveType(typeId: 25)
 class Episode {
   @HiveField(0)
   final int episodeNumber;

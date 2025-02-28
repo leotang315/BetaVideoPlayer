@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'video_file.g.dart';
 
-@HiveType(typeId: 6)
+@HiveType(typeId: 10)
 class VideoFile {
   @HiveField(0)
   final String name;

@@ -24,14 +24,14 @@ class SourceLibraryTab extends StatelessWidget {
       body: Consumer<VideoSourceProvider>(
         builder: (context, provider, child) {
           final localSources = provider.getVideoSourcesByType(
-            VideoSourceType.localStorage,
+            VideoSourceClass.localStorage,
           );
           final networkSources = provider.getVideoSourcesByType(
-            VideoSourceType.networkStorage,
+            VideoSourceClass.networkStorage,
           );
 
           final cloudSources = provider.getVideoSourcesByType(
-            VideoSourceType.cloudStorage,
+            VideoSourceClass.cloudStorage,
           );
 
           return ListView(
@@ -86,20 +86,20 @@ class SourceLibraryTab extends StatelessWidget {
     );
   }
 
-  Widget _getSourceIcon(VideoSourceType type) {
+  Widget _getSourceIcon(VideoSourceClass type) {
     IconData iconData;
     Color iconColor;
 
     switch (type) {
-      case VideoSourceType.localStorage:
+      case VideoSourceClass.localStorage:
         iconData = Icons.folder;
         iconColor = Colors.blue;
         break;
-      case VideoSourceType.networkStorage:
+      case VideoSourceClass.networkStorage:
         iconData = Icons.computer;
         iconColor = Colors.green;
         break;
-      case VideoSourceType.cloudStorage:
+      case VideoSourceClass.cloudStorage:
         iconData = Icons.cloud;
         iconColor = Colors.orange;
         break;
@@ -118,7 +118,7 @@ class SourceLibraryTab extends StatelessWidget {
   void _showAddSourceDialog(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const VideoSourceTypeDialog()),
+      MaterialPageRoute(builder: (context) => const VideoSourceAddDialog()),
     );
   }
 

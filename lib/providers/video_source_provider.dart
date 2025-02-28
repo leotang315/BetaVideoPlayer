@@ -32,7 +32,7 @@ class VideoSourceProvider extends ChangeNotifier {
     }
   }
 
-  List<VideoSourceBase> getVideoSourcesByType(VideoSourceType type) {
+  List<VideoSourceBase> getVideoSourcesByType(VideoSourceClass type) {
     return _sourceBox.values.where((source) => source.type == type).toList();
   }
 

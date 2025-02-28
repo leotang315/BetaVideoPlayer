@@ -35,7 +35,7 @@ void main() {
     test('添加本地视频源', () async {
       // Arrange
       final localSource = VideoSourceLocalPath(
-        VideoSourceType.localStorage,
+        VideoSourceClass.localStorage,
         '本地视频',
         '/test/videos',
       );
@@ -51,12 +51,12 @@ void main() {
     test('按类型查找视频源', () async {
       // Arrange
       final localSource = VideoSourceLocalPath(
-        VideoSourceType.localStorage,
+        VideoSourceClass.localStorage,
         '本地视频',
         '/test/videos',
       );
       final smbSource = VideoSourceSmb(
-        VideoSourceType.networkStorage,
+        VideoSourceClass.networkStorage,
         'SMB共享',
         '192.168.1.100',
         'user',
@@ -68,7 +68,7 @@ void main() {
       await provider.addVideoSource(localSource);
       await provider.addVideoSource(smbSource);
       final localSources = provider.getVideoSourcesByType(
-        VideoSourceType.localStorage,
+        VideoSourceClass.localStorage,
       );
 
       // Assert
@@ -79,7 +79,7 @@ void main() {
     test('按名称查找视频源', () async {
       // Arrange
       final localSource = VideoSourceLocalPath(
-        VideoSourceType.localStorage,
+        VideoSourceClass.localStorage,
         '本地视频',
         '/test/videos',
       );

@@ -12,6 +12,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'providers/video_provider.dart';
 import 'providers/video_file_provider.dart';
 import 'providers/video_meta_provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 void main() async {
   await Hive.initFlutter();
