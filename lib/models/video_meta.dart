@@ -18,16 +18,13 @@ class VideoMetadata {
   final VideoType type;
 
   @HiveField(1)
-  final String title;
+  final String name;
 
   @HiveField(2)
   final String overview;
 
   @HiveField(3)
   final String posterUrl;
-
-  @HiveField(4)
-  final String backdropUrl;
 
   @HiveField(5)
   final double rating;
@@ -38,10 +35,9 @@ class VideoMetadata {
   @HiveField(7)
   const VideoMetadata({
     required this.type,
-    required this.title,
+    required this.name,
     required this.overview,
     required this.posterUrl,
-    required this.backdropUrl,
     required this.rating,
     required this.releaseDate,
   });
@@ -56,10 +52,9 @@ class MovieMetadata extends VideoMetadata {
   final int runtime;
 
   const MovieMetadata({
-    required super.title,
+    required super.name,
     required super.overview,
     required super.posterUrl,
-    required super.backdropUrl,
     required super.rating,
     required super.releaseDate,
     required this.videoFile,
@@ -73,10 +68,9 @@ class TVShowMetadata extends VideoMetadata {
   final List<Season> seasons;
 
   const TVShowMetadata({
-    required super.title,
+    required super.name,
     required super.overview,
     required super.posterUrl,
-    required super.backdropUrl,
     required super.rating,
     required super.releaseDate,
     required this.seasons,

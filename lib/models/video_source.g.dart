@@ -8,7 +8,7 @@ part of 'video_source.dart';
 
 class VideoSourceBaseAdapter extends TypeAdapter<VideoSourceBase> {
   @override
-  final int typeId = 1;
+  final int typeId = 2;
 
   @override
   VideoSourceBase read(BinaryReader reader) {
@@ -16,7 +16,10 @@ class VideoSourceBaseAdapter extends TypeAdapter<VideoSourceBase> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return VideoSourceBase(fields[0] as VideoSourceClass, fields[1] as String);
+    return VideoSourceBase(
+      fields[0] as VideoSourceClass,
+      fields[1] as String,
+    );
   }
 
   @override
@@ -44,7 +47,7 @@ class VideoSourceBaseAdapter extends TypeAdapter<VideoSourceBase> {
 
 class VideoSourceLocalPathAdapter extends TypeAdapter<VideoSourceLocalPath> {
   @override
-  final int typeId = 2;
+  final int typeId = 3;
 
   @override
   VideoSourceLocalPath read(BinaryReader reader) {
@@ -86,7 +89,7 @@ class VideoSourceLocalPathAdapter extends TypeAdapter<VideoSourceLocalPath> {
 
 class VideoSourceSmbAdapter extends TypeAdapter<VideoSourceSmb> {
   @override
-  final int typeId = 3;
+  final int typeId = 4;
 
   @override
   VideoSourceSmb read(BinaryReader reader) {
@@ -137,7 +140,7 @@ class VideoSourceSmbAdapter extends TypeAdapter<VideoSourceSmb> {
 
 class VideoSourceWebDavAdapter extends TypeAdapter<VideoSourceWebDav> {
   @override
-  final int typeId = 4;
+  final int typeId = 5;
 
   @override
   VideoSourceWebDav read(BinaryReader reader) {
@@ -188,7 +191,7 @@ class VideoSourceWebDavAdapter extends TypeAdapter<VideoSourceWebDav> {
 
 class VideoSourceBaiduCloudAdapter extends TypeAdapter<VideoSourceBaiduCloud> {
   @override
-  final int typeId = 5;
+  final int typeId = 6;
 
   @override
   VideoSourceBaiduCloud read(BinaryReader reader) {
@@ -225,7 +228,7 @@ class VideoSourceBaiduCloudAdapter extends TypeAdapter<VideoSourceBaiduCloud> {
           typeId == other.typeId;
 }
 
-class VideoSourceTypeAdapter extends TypeAdapter<VideoSourceClass> {
+class VideoSourceClassAdapter extends TypeAdapter<VideoSourceClass> {
   @override
   final int typeId = 0;
 
@@ -254,6 +257,55 @@ class VideoSourceTypeAdapter extends TypeAdapter<VideoSourceClass> {
         break;
       case VideoSourceClass.cloudStorage:
         writer.writeByte(2);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is VideoSourceClassAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class VideoSourceTypeAdapter extends TypeAdapter<VideoSourceType> {
+  @override
+  final int typeId = 1;
+
+  @override
+  VideoSourceType read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return VideoSourceType.local;
+      case 1:
+        return VideoSourceType.smb;
+      case 2:
+        return VideoSourceType.webDav;
+      case 3:
+        return VideoSourceType.baiduCloud;
+      default:
+        return VideoSourceType.local;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, VideoSourceType obj) {
+    switch (obj) {
+      case VideoSourceType.local:
+        writer.writeByte(0);
+        break;
+      case VideoSourceType.smb:
+        writer.writeByte(1);
+        break;
+      case VideoSourceType.webDav:
+        writer.writeByte(2);
+        break;
+      case VideoSourceType.baiduCloud:
+        writer.writeByte(3);
         break;
     }
   }

@@ -8,7 +8,7 @@ part of 'video_meta.dart';
 
 class VideoMetadataAdapter extends TypeAdapter<VideoMetadata> {
   @override
-  final int typeId = 8;
+  final int typeId = 21;
 
   @override
   VideoMetadata read(BinaryReader reader) {
@@ -18,10 +18,9 @@ class VideoMetadataAdapter extends TypeAdapter<VideoMetadata> {
     };
     return VideoMetadata(
       type: fields[0] as VideoType,
-      title: fields[1] as String,
+      name: fields[1] as String,
       overview: fields[2] as String,
       posterUrl: fields[3] as String,
-      backdropUrl: fields[4] as String,
       rating: fields[5] as double,
       releaseDate: fields[6] as String,
     );
@@ -30,17 +29,15 @@ class VideoMetadataAdapter extends TypeAdapter<VideoMetadata> {
   @override
   void write(BinaryWriter writer, VideoMetadata obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
-      ..write(obj.title)
+      ..write(obj.name)
       ..writeByte(2)
       ..write(obj.overview)
       ..writeByte(3)
       ..write(obj.posterUrl)
-      ..writeByte(4)
-      ..write(obj.backdropUrl)
       ..writeByte(5)
       ..write(obj.rating)
       ..writeByte(6)
@@ -60,7 +57,7 @@ class VideoMetadataAdapter extends TypeAdapter<VideoMetadata> {
 
 class MovieMetadataAdapter extends TypeAdapter<MovieMetadata> {
   @override
-  final int typeId = 9;
+  final int typeId = 22;
 
   @override
   MovieMetadata read(BinaryReader reader) {
@@ -69,10 +66,9 @@ class MovieMetadataAdapter extends TypeAdapter<MovieMetadata> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return MovieMetadata(
-      title: fields[1] as String,
+      name: fields[1] as String,
       overview: fields[2] as String,
       posterUrl: fields[3] as String,
-      backdropUrl: fields[4] as String,
       rating: fields[5] as double,
       releaseDate: fields[6] as String,
       videoFile: fields[10] as VideoFile,
@@ -83,7 +79,7 @@ class MovieMetadataAdapter extends TypeAdapter<MovieMetadata> {
   @override
   void write(BinaryWriter writer, MovieMetadata obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(8)
       ..writeByte(10)
       ..write(obj.videoFile)
       ..writeByte(11)
@@ -91,13 +87,11 @@ class MovieMetadataAdapter extends TypeAdapter<MovieMetadata> {
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
-      ..write(obj.title)
+      ..write(obj.name)
       ..writeByte(2)
       ..write(obj.overview)
       ..writeByte(3)
       ..write(obj.posterUrl)
-      ..writeByte(4)
-      ..write(obj.backdropUrl)
       ..writeByte(5)
       ..write(obj.rating)
       ..writeByte(6)
@@ -117,7 +111,7 @@ class MovieMetadataAdapter extends TypeAdapter<MovieMetadata> {
 
 class TVShowMetadataAdapter extends TypeAdapter<TVShowMetadata> {
   @override
-  final int typeId = 10;
+  final int typeId = 23;
 
   @override
   TVShowMetadata read(BinaryReader reader) {
@@ -126,10 +120,9 @@ class TVShowMetadataAdapter extends TypeAdapter<TVShowMetadata> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TVShowMetadata(
-      title: fields[1] as String,
+      name: fields[1] as String,
       overview: fields[2] as String,
       posterUrl: fields[3] as String,
-      backdropUrl: fields[4] as String,
       rating: fields[5] as double,
       releaseDate: fields[6] as String,
       seasons: (fields[10] as List).cast<Season>(),
@@ -139,19 +132,17 @@ class TVShowMetadataAdapter extends TypeAdapter<TVShowMetadata> {
   @override
   void write(BinaryWriter writer, TVShowMetadata obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(7)
       ..writeByte(10)
       ..write(obj.seasons)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
-      ..write(obj.title)
+      ..write(obj.name)
       ..writeByte(2)
       ..write(obj.overview)
       ..writeByte(3)
       ..write(obj.posterUrl)
-      ..writeByte(4)
-      ..write(obj.backdropUrl)
       ..writeByte(5)
       ..write(obj.rating)
       ..writeByte(6)
@@ -171,7 +162,7 @@ class TVShowMetadataAdapter extends TypeAdapter<TVShowMetadata> {
 
 class SeasonAdapter extends TypeAdapter<Season> {
   @override
-  final int typeId = 11;
+  final int typeId = 24;
 
   @override
   Season read(BinaryReader reader) {
@@ -217,7 +208,7 @@ class SeasonAdapter extends TypeAdapter<Season> {
 
 class EpisodeAdapter extends TypeAdapter<Episode> {
   @override
-  final int typeId = 12;
+  final int typeId = 25;
 
   @override
   Episode read(BinaryReader reader) {
@@ -263,7 +254,7 @@ class EpisodeAdapter extends TypeAdapter<Episode> {
 
 class VideoTypeAdapter extends TypeAdapter<VideoType> {
   @override
-  final int typeId = 7;
+  final int typeId = 20;
 
   @override
   VideoType read(BinaryReader reader) {

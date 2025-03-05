@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../models/video_sot.dart';
@@ -17,14 +19,21 @@ class VideoCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Icon(Icons.movie, size: 48, color: Colors.grey[400]),
-              ),
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(child: Image.file(File(cardInfo.imgPath))),
+                ),
+                Positioned(
+                  bottom: 10,
+                  right: 10,
+                  child: Text(cardInfo.score.toString()),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 8),

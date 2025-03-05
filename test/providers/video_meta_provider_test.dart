@@ -57,7 +57,7 @@ void main() {
 
       // Assert
       expect(provider.allMovies.length, 1);
-      expect(provider.allMovies.first.title, '测试电影');
+      expect(provider.allMovies.first.name, '测试电影');
     });
 
     test('搜索元数据', () async {
@@ -84,7 +84,7 @@ void main() {
 
       // Assert
       expect(searchResults.length, 1);
-      expect(searchResults.first.title, '星际穿越');
+      expect(searchResults.first.name, '星际穿越');
     });
   });
 }

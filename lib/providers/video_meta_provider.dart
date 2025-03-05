@@ -56,7 +56,7 @@ class VideoMetaProvider extends ChangeNotifier {
 
   TVShowMetadata? findTVShowByTitle(String title) {
     try {
-      return _tvShowBox.values.firstWhere((tvShow) => tvShow.title == title);
+      return _tvShowBox.values.firstWhere((tvShow) => tvShow.name == title);
     } catch (e) {
       return null;
     }
@@ -101,12 +101,12 @@ class VideoMetaProvider extends ChangeNotifier {
     return [
       ...allMovies.where(
         (movie) =>
-            movie.title.toLowerCase().contains(lowercaseKeyword) ||
+            movie.name.toLowerCase().contains(lowercaseKeyword) ||
             movie.overview.toLowerCase().contains(lowercaseKeyword),
       ),
       ...allTVShows.where(
         (tvShow) =>
-            tvShow.title.toLowerCase().contains(lowercaseKeyword) ||
+            tvShow.name.toLowerCase().contains(lowercaseKeyword) ||
             tvShow.overview.toLowerCase().contains(lowercaseKeyword),
       ),
     ];
