@@ -71,19 +71,16 @@ class MovieMetadataAdapter extends TypeAdapter<MovieMetadata> {
       posterUrl: fields[3] as String,
       rating: fields[5] as double,
       releaseDate: fields[6] as String,
-      videoFile: fields[10] as VideoFile,
-      runtime: fields[11] as int,
-    );
+      videoFile: fields[10] as VideoFile?,
+    )..type = fields[0] as VideoType;
   }
 
   @override
   void write(BinaryWriter writer, MovieMetadata obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(7)
       ..writeByte(10)
       ..write(obj.videoFile)
-      ..writeByte(11)
-      ..write(obj.runtime)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
@@ -126,7 +123,7 @@ class TVShowMetadataAdapter extends TypeAdapter<TVShowMetadata> {
       rating: fields[5] as double,
       releaseDate: fields[6] as String,
       seasons: (fields[10] as List).cast<Season>(),
-    );
+    )..type = fields[0] as VideoType;
   }
 
   @override
@@ -221,7 +218,7 @@ class EpisodeAdapter extends TypeAdapter<Episode> {
       name: fields[1] as String,
       overview: fields[2] as String,
       stillUrl: fields[3] as String,
-      videoFile: fields[4] as VideoFile,
+      videoFile: fields[4] as VideoFile?,
     );
   }
 

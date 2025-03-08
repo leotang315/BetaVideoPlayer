@@ -15,25 +15,25 @@ enum VideoType {
 @HiveType(typeId: 21)
 class VideoMetadata {
   @HiveField(0)
-  final VideoType type;
+  VideoType type;
 
   @HiveField(1)
-  final String name;
+  String name;
 
   @HiveField(2)
-  final String overview;
+  String overview;
 
   @HiveField(3)
-  final String posterUrl;
+  String posterUrl;
 
   @HiveField(5)
-  final double rating;
+  double rating;
 
   @HiveField(6)
-  final String releaseDate;
+  String releaseDate;
 
   @HiveField(7)
-  const VideoMetadata({
+  VideoMetadata({
     required this.type,
     required this.name,
     required this.overview,
@@ -46,28 +46,24 @@ class VideoMetadata {
 @HiveType(typeId: 22)
 class MovieMetadata extends VideoMetadata {
   @HiveField(10)
-  final VideoFile videoFile;
+  VideoFile? videoFile;
 
-  @HiveField(11)
-  final int runtime;
-
-  const MovieMetadata({
+  MovieMetadata({
     required super.name,
     required super.overview,
     required super.posterUrl,
     required super.rating,
     required super.releaseDate,
-    required this.videoFile,
-    required this.runtime,
+    this.videoFile,
   }) : super(type: VideoType.movie);
 }
 
 @HiveType(typeId: 23)
 class TVShowMetadata extends VideoMetadata {
   @HiveField(10)
-  final List<Season> seasons;
+  List<Season> seasons;
 
-  const TVShowMetadata({
+  TVShowMetadata({
     required super.name,
     required super.overview,
     required super.posterUrl,
@@ -80,21 +76,21 @@ class TVShowMetadata extends VideoMetadata {
 @HiveType(typeId: 24)
 class Season {
   @HiveField(0)
-  final int seasonNumber;
+  int seasonNumber;
 
   @HiveField(1)
-  final String name;
+  String name;
 
   @HiveField(2)
-  final String overview;
+  String overview;
 
   @HiveField(3)
-  final String posterUrl;
+  String posterUrl;
 
   @HiveField(4)
-  final List<Episode> episodes;
+  List<Episode> episodes;
 
-  const Season({
+  Season({
     required this.seasonNumber,
     required this.name,
     required this.overview,
@@ -106,21 +102,21 @@ class Season {
 @HiveType(typeId: 25)
 class Episode {
   @HiveField(0)
-  final int episodeNumber;
+  int episodeNumber;
 
   @HiveField(1)
-  final String name;
+  String name;
 
   @HiveField(2)
-  final String overview;
+  String overview;
 
   @HiveField(3)
-  final String stillUrl;
+  String stillUrl;
 
   @HiveField(4)
-  final VideoFile videoFile;
+  VideoFile? videoFile;
 
-  const Episode({
+  Episode({
     required this.episodeNumber,
     required this.name,
     required this.overview,
