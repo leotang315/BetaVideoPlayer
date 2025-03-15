@@ -18,24 +18,18 @@ class PlayListAdapter extends TypeAdapter<PlayList> {
     };
     return PlayList(
       files: (fields[0] as List).cast<VideoFile>(),
-      name: fields[1] as String,
       currentIndex: fields[2] as int,
-      metadata: fields[3] as VideoMetadata?,
     );
   }
 
   @override
   void write(BinaryWriter writer, PlayList obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(2)
       ..writeByte(0)
       ..write(obj.files)
-      ..writeByte(1)
-      ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.currentIndex)
-      ..writeByte(3)
-      ..write(obj.metadata);
+      ..write(obj.currentIndex);
   }
 
   @override

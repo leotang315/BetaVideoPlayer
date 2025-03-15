@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../models/video_sot.dart';
+import '../models/card_info.dart';
 
 class VideoCard extends StatelessWidget {
   final CardInfo cardInfo;

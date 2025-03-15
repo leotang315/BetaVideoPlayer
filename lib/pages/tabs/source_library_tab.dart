@@ -1,4 +1,4 @@
-import 'package:beta_player/models/video_sot.dart';
+import 'package:beta_player/models/card_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/video_source.dart';

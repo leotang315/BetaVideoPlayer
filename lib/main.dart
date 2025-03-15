@@ -9,7 +9,6 @@ import 'models/video_source.dart';
 import 'pages/main_page.dart';
 import 'providers/video_source_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'providers/video_provider.dart';
 import 'providers/video_file_provider.dart';
 import 'providers/video_meta_provider.dart';
 import 'package:file_picker/file_picker.dart';
@@ -18,6 +17,7 @@ void main() async {
   await Hive.initFlutter();
 
   // Register adapters
+  Hive.registerAdapter(VideoSourceClassAdapter());
   Hive.registerAdapter(VideoSourceTypeAdapter());
   Hive.registerAdapter(VideoSourceBaseAdapter());
   Hive.registerAdapter(VideoSourceLocalPathAdapter());
@@ -47,7 +47,6 @@ void main() async {
         ChangeNotifierProvider.value(value: videoSourceProvider),
         ChangeNotifierProvider.value(value: videoFileProvider),
         ChangeNotifierProvider.value(value: videoMetaProvider),
-        ChangeNotifierProvider(create: (_) => VideoProvider()),
         ChangeNotifierProvider(
           create: (_) => RecentPlayProvider(),
         ), // 添加 RecentPlayProvider
@@ -61,7 +60,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '视频播放器',
+      title: 'Beta播放器',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.light,

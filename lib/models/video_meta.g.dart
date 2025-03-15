@@ -157,9 +157,60 @@ class TVShowMetadataAdapter extends TypeAdapter<TVShowMetadata> {
           typeId == other.typeId;
 }
 
-class SeasonAdapter extends TypeAdapter<Season> {
+class OtherMetadataAdapter extends TypeAdapter<OtherMetadata> {
   @override
   final int typeId = 24;
+
+  @override
+  OtherMetadata read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return OtherMetadata(
+      name: fields[1] as String,
+      overview: fields[2] as String,
+      posterUrl: fields[3] as String,
+      rating: fields[5] as double,
+      releaseDate: fields[6] as String,
+      videoFile: fields[10] as VideoFile?,
+    )..type = fields[0] as VideoType;
+  }
+
+  @override
+  void write(BinaryWriter writer, OtherMetadata obj) {
+    writer
+      ..writeByte(7)
+      ..writeByte(10)
+      ..write(obj.videoFile)
+      ..writeByte(0)
+      ..write(obj.type)
+      ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.overview)
+      ..writeByte(3)
+      ..write(obj.posterUrl)
+      ..writeByte(5)
+      ..write(obj.rating)
+      ..writeByte(6)
+      ..write(obj.releaseDate);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OtherMetadataAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class SeasonAdapter extends TypeAdapter<Season> {
+  @override
+  final int typeId = 25;
 
   @override
   Season read(BinaryReader reader) {
@@ -205,7 +256,7 @@ class SeasonAdapter extends TypeAdapter<Season> {
 
 class EpisodeAdapter extends TypeAdapter<Episode> {
   @override
-  final int typeId = 25;
+  final int typeId = 26;
 
   @override
   Episode read(BinaryReader reader) {

@@ -46,11 +46,6 @@ class VideoFileProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updatePlayPosition(VideoFile file, Duration position) async {
-    final updatedFile = file.copyWith();
-    await updateVideoFile(file, updatedFile);
-  }
-
   // 用于测试的清理方法
   Future<void> clear() async {
     await _fileBox.clear();

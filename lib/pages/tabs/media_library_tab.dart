@@ -2,12 +2,14 @@ import 'package:beta_player/widgets/video_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
-import '../../models/video_sot.dart';
+import '../../models/card_info.dart';
+import '../../models/video_meta.dart';
 import '../../providers/recent_play_provider.dart';
-import '../../providers/video_provider.dart';
+import '../../providers/video_meta_provider.dart';
 import '../common/video_player_page.dart';
 import '../common/all_recent_plays_screen.dart';
 import '../common/all_video_page.dart';
+import '../../models/play_list.dart';
 
 class MediaLibraryTab extends StatelessWidget {
   @override
@@ -107,115 +109,159 @@ class MediaLibraryTab extends StatelessWidget {
   }
 
   Widget _buildMoviesSection(BuildContext context) {
-    final show2 = [
-      CardInfo(
-        title: '动物王国大冒险',
-        subtitle: '共2季',
-        imgPath: 'assets/logo.webp',
-        score: 7.5,
-      ),
-      CardInfo(
-        title: '开口说英语',
-        subtitle: '共5季',
-        imgPath: 'assets/logo.webp',
-        score: 8.8,
-      ),
-      CardInfo(
-        title: '小鼠波波',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 7.5,
-      ),
-      CardInfo(
-        title: 'DIDI狗的一天',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 8.8,
-      ),
-    ];
-    return Consumer<VideoProvider>(
+    // final show2 = [
+    //   CardInfo(
+    //     title: '动物王国大冒险',
+    //     subtitle: '共2季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 7.5,
+    //   ),
+    //   CardInfo(
+    //     title: '开口说英语',
+    //     subtitle: '共5季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 8.8,
+    //   ),
+    //   CardInfo(
+    //     title: '小鼠波波',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 7.5,
+    //   ),
+    //   CardInfo(
+    //     title: 'DIDI狗的一天',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 8.8,
+    //   ),
+    // ];
+    return Consumer<VideoMetaProvider>(
       builder: (context, provider, child) {
-        return _buildSection(context, '电影', show2);
+        final movies =
+            provider.getMetadataByType(VideoType.movie) as List<MovieMetadata>;
+        final cards =
+            movies
+                .map(
+                  (movie) => CardInfo(
+                    title: movie.name,
+                    subtitle: "subtitle",
+                    imgPath: movie.posterUrl,
+                    score: movie.rating,
+                    meta: movie,
+                  ),
+                )
+                .toList();
+
+        return _buildSection(context, '电影', cards);
       },
     );
   }
 
   Widget _buildTVShowsSection(BuildContext context) {
-    final show2 = [
-      CardInfo(
-        title: '动物王国大冒险',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 7.5,
-      ),
-      CardInfo(
-        title: '开口说英语',
-        subtitle: '共5季',
-        imgPath: 'assets/logo.webp',
-        score: 8.8,
-      ),
-      CardInfo(
-        title: '小鼠波波',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 7.5,
-      ),
-      CardInfo(
-        title: 'DIDI狗的一天',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 8.8,
-      ),
-      CardInfo(
-        title: 'DIDI狗的2天',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 8.8,
-      ),
-    ];
-    return Consumer<VideoProvider>(
+    // final show2 = [
+    //   CardInfo(
+    //     title: '动物王国大冒险',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 7.5,
+    //   ),
+    //   CardInfo(
+    //     title: '开口说英语',
+    //     subtitle: '共5季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 8.8,
+    //   ),
+    //   CardInfo(
+    //     title: '小鼠波波',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 7.5,
+    //   ),
+    //   CardInfo(
+    //     title: 'DIDI狗的一天',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 8.8,
+    //   ),
+    //   CardInfo(
+    //     title: 'DIDI狗的2天',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 8.8,
+    //   ),
+    // ];
+    return Consumer<VideoMetaProvider>(
       builder: (context, provider, child) {
-        return _buildSection(context, '电视剧', show2);
+        final tvshows =
+            provider.getMetadataByType(VideoType.tvShow)
+                as List<TVShowMetadata>;
+        final cards =
+            tvshows
+                .map(
+                  (tvshow) => CardInfo(
+                    title: tvshow.name,
+                    subtitle: "共${tvshow.seasons.length}季",
+                    imgPath: tvshow.posterUrl,
+                    score: tvshow.rating,
+                    meta: tvshow,
+                  ),
+                )
+                .toList();
+
+        return _buildSection(context, '电视剧', cards);
       },
     );
   }
 
   Widget _buildOtherSection(BuildContext context) {
-    final show2 = [
-      CardInfo(
-        title: '动物王国大冒险',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 7.5,
-      ),
-      CardInfo(
-        title: '开口说英语',
-        subtitle: '共5季',
-        imgPath: 'assets/logo.webp',
-        score: 8.8,
-      ),
-      CardInfo(
-        title: '小鼠波波',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 7.5,
-      ),
-      CardInfo(
-        title: 'DIDI狗的一天',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 8.8,
-      ),
-      CardInfo(
-        title: 'DIDI狗的2天',
-        subtitle: '共1季',
-        imgPath: 'assets/logo.webp',
-        score: 8.8,
-      ),
-    ];
-    return Consumer<VideoProvider>(
+    // final show2 = [
+    //   CardInfo(
+    //     title: '动物王国大冒险',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 7.5,
+    //   ),
+    //   CardInfo(
+    //     title: '开口说英语',
+    //     subtitle: '共5季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 8.8,
+    //   ),
+    //   CardInfo(
+    //     title: '小鼠波波',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 7.5,
+    //   ),
+    //   CardInfo(
+    //     title: 'DIDI狗的一天',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 8.8,
+    //   ),
+    //   CardInfo(
+    //     title: 'DIDI狗的2天',
+    //     subtitle: '共1季',
+    //     imgPath: 'assets/logo.webp',
+    //     score: 8.8,
+    //   ),
+    // ];
+    return Consumer<VideoMetaProvider>(
       builder: (context, provider, child) {
-        return _buildSection(context, '其他', show2);
+        final others = provider.getMetadataByType(VideoType.other);
+        final cards =
+            others
+                .map(
+                  (other) => CardInfo(
+                    title: other.name,
+                    subtitle: "todo",
+                    imgPath: other.posterUrl,
+                    score: other.rating,
+                    meta: other,
+                  ),
+                )
+                .toList();
+        return _buildSection(context, '其他', cards);
       },
     );
   }
@@ -270,7 +316,22 @@ class MediaLibraryTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: cards.length,
               itemBuilder: (context, index) {
-                return VideoCard(cards[index]);
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => VideoPlayerPage(
+                              playlist: PlayList.fromVideoMeta(
+                                cards[index].meta,
+                              ),
+                            ),
+                      ),
+                    );
+                  },
+                  child: VideoCard(cards[index]),
+                );
               },
             ),
           ),

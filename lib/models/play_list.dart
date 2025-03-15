@@ -9,47 +9,42 @@ class PlayList {
   @HiveField(0)
   final List<VideoFile> files;
 
-  @HiveField(1)
-  final String name;
-
   @HiveField(2)
   int currentIndex;
 
-  @HiveField(3)
-  final VideoMetadata? metadata;
-
-  PlayList({
-    required this.files,
-    required this.name,
-    this.currentIndex = 0,
-    this.metadata,
-  });
+  PlayList({required this.files, this.currentIndex = 0});
 
   bool get hasNext => currentIndex < files.length - 1;
   bool get hasPrevious => currentIndex > 0;
 
   VideoFile? get currentVideo => files.isNotEmpty ? files[currentIndex] : null;
 
-  static PlayList fromMovie(MovieMetadata movie) {
-    return PlayList(
-      files: movie.videoFile != null ? [movie.videoFile!] : [],
-      name: movie.name,
-      metadata: movie,
-    );
-  }
+  static PlayList fromVideoMeta(VideoMetadata videoMeta) {
+    switch (videoMeta) {
+      case MovieMetadata movie:
+        return PlayList(
+          files: movie.videoFile != null ? [movie.videoFile!] : [],
+        );
+      case TVShowMetadata tvShow:
+        {
+          return PlayList(
+            files:
+                tvShow.seasons
+                    .expand((season) => season.episodes) // 展平所有季的所有集
+                    .where(
+                      (episode) => episode.videoFile != null,
+                    ) // 过滤掉没有视频文件的集
+                    .map((episode) => episode.videoFile!) // 获取视频文件
+                    .toList(),
+          );
+        }
 
-  static PlayList fromTVShow(TVShowMetadata tvShow, int seasonIndex) {
-    final season = tvShow.seasons[seasonIndex];
-    final files =
-        season.episodes
-            .where((episode) => episode.videoFile != null)
-            .map((episode) => episode.videoFile!)
-            .toList();
-
-    return PlayList(
-      files: files,
-      name: '${tvShow.name} - ${season.name}',
-      metadata: tvShow,
-    );
+      case OtherMetadata other:
+        return PlayList(
+          files: other.videoFile != null ? [other.videoFile!] : [],
+        );
+      default:
+        throw UnimplementedError();
+    }
   }
 }

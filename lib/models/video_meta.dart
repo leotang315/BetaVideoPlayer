@@ -74,6 +74,20 @@ class TVShowMetadata extends VideoMetadata {
 }
 
 @HiveType(typeId: 24)
+class OtherMetadata extends VideoMetadata {
+  @HiveField(10)
+  VideoFile? videoFile;
+  OtherMetadata({
+    required super.name,
+    required super.overview,
+    required super.posterUrl,
+    required super.rating,
+    required super.releaseDate,
+    this.videoFile,
+  }) : super(type: VideoType.movie);
+}
+
+@HiveType(typeId: 25)
 class Season {
   @HiveField(0)
   int seasonNumber;
@@ -99,7 +113,7 @@ class Season {
   });
 }
 
-@HiveType(typeId: 25)
+@HiveType(typeId: 26)
 class Episode {
   @HiveField(0)
   int episodeNumber;

@@ -7,7 +7,7 @@ import 'dart:io';
 import '../../models/play_list.dart';
 import '../../models/video_file.dart';
 import '../../models/video_source.dart';
-import '../../providers/video_provider.dart';
+
 import '../../providers/recent_play_provider.dart';
 
 class VideoPlayerPage extends StatefulWidget {

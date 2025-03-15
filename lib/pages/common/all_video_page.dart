@@ -1,9 +1,8 @@
 import 'package:beta_player/providers/video_meta_provider.dart';
-import 'package:beta_player/providers/video_provider.dart';
 import 'package:beta_player/widgets/video_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/video_sot.dart';
+import '../../models/card_info.dart';
 
 class AllVideoPage extends StatelessWidget {
   AllVideoPage(String category, List<CardInfo> cards)
@@ -33,16 +32,5 @@ class AllVideoPage extends StatelessWidget {
         },
       ),
     );
-  }
-
-  IconData _getSourceIcon(SourceType type) {
-    switch (type) {
-      case SourceType.local:
-        return Icons.folder;
-      case SourceType.smb:
-        return Icons.computer;
-      case SourceType.webdav:
-        return Icons.cloud;
-    }
   }
 }

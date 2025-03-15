@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/recent_play_provider.dart';
-import '../../providers/video_provider.dart';
 
 class AllRecentPlaysScreen extends StatelessWidget {
   @override
@@ -30,24 +29,7 @@ class AllRecentPlaysScreen extends StatelessWidget {
               return Card(
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
-                  onTap: () {
-                    // 查找视频所属的 VideoSource
-                    final videoProvider = context.read<VideoProvider>();
-                    for (var source in videoProvider.videos) {
-                      int idx = source.playlist.indexWhere(
-                        (v) => v.path == video.path,
-                      );
-                      if (idx != -1) {
-                        source.currentIndex = idx;
-                        videoProvider.setCurrentVideo(source);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Text("data")),
-                        );
-                        break;
-                      }
-                    }
-                  },
+                  onTap: () {},
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
