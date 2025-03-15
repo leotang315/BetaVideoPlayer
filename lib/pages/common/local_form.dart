@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'dart:async';
 import '../../models/video_source.dart';
 import '../../providers/video_file_provider.dart';
 import '../../providers/video_meta_provider.dart';

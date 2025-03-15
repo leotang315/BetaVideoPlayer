@@ -1,3 +1,4 @@
+import 'package:beta_player/providers/video_meta_provider.dart';
 import 'package:beta_player/providers/video_provider.dart';
 import 'package:beta_player/widgets/video_card.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class AllVideoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Center(child: Text(_category))),
-      body: Consumer<VideoProvider>(
+      body: Consumer<VideoMetaProvider>(
         builder: (context, provider, child) {
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

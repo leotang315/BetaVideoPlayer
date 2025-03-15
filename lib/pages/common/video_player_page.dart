@@ -4,20 +4,25 @@ import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
+import '../../models/play_list.dart';
 import '../../models/video_file.dart';
 import '../../models/video_source.dart';
 import '../../providers/video_provider.dart';
 import '../../providers/recent_play_provider.dart';
 
 class VideoPlayerPage extends StatefulWidget {
+  final PlayList playlist;
+
+  const VideoPlayerPage({super.key, required this.playlist});
+
   @override
   _VideoPlayerPageState createState() => _VideoPlayerPageState();
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
   late VideoPlayerController _controller;
+  late final PlayList _playlist;
   bool _isInitialized = false;
-  late final VideoFile _file;
   bool _isFullScreen = false;
   double _volume = 1.0;
   final List<double> _playbackRates = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
@@ -25,8 +30,32 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   @override
   void initState() {
     super.initState();
+    _playlist = widget.playlist;
     _initializePlayer();
-    context.read<RecentPlayProvider>().addRecentPlay(_file);
+
+    context.read<RecentPlayProvider>().addRecentPlay(_playlist.currentVideo!);
+  }
+
+  Future<void> _playNext() async {
+    if (!_playlist.hasNext) return;
+    await _controller.dispose();
+    setState(() {
+      _isInitialized = false;
+      _playlist.currentIndex++;
+    });
+    await _initializePlayer();
+    _controller.play();
+  }
+
+  Future<void> _playPrevious() async {
+    if (!_playlist.hasPrevious) return;
+    await _controller.dispose();
+    setState(() {
+      _isInitialized = false;
+      _playlist.currentIndex--;
+    });
+    await _initializePlayer();
+    _controller.play();
   }
 
   String _formatDuration(Duration duration) {
@@ -41,12 +70,14 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   Future<void> _initializePlayer() async {
     final videoSourceProvider = context.read<VideoSourceProvider>();
     final videoSource = videoSourceProvider.findVideoSourceByID(
-      _file.videoSourceId,
+      _playlist.currentVideo!.videoSourceId,
     );
 
     switch (videoSource!.type) {
       case VideoSourceType.local:
-        _controller = VideoPlayerController.file(File(_file.path));
+        _controller = VideoPlayerController.file(
+          File(_playlist.currentVideo!.path),
+        );
         break;
       case VideoSourceType.smb:
       case VideoSourceType.webDav:
@@ -110,7 +141,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
               children: [
                 IconButton(
                   icon: Icon(Icons.skip_previous),
-                  onPressed: _videoSource.hasPrevious ? _playPrevious : null,
+                  onPressed: _playlist.hasPrevious ? _playPrevious : null,
                 ),
                 IconButton(
                   icon: Icon(
@@ -127,7 +158,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                 ),
                 IconButton(
                   icon: Icon(Icons.skip_next),
-                  onPressed: _videoSource.hasNext ? _playNext : null,
+                  onPressed: _playlist.hasNext ? _playNext : null,
                 ),
                 // Volume control
                 Row(
@@ -198,28 +229,6 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     );
   }
 
-  Future<void> _playNext() async {
-    if (!_videoSource.hasNext) return;
-    await _controller.dispose();
-    setState(() {
-      _isInitialized = false;
-      _videoSource.currentIndex++;
-    });
-    await _initializePlayer();
-    _controller.play();
-  }
-
-  Future<void> _playPrevious() async {
-    if (!_videoSource.hasPrevious) return;
-    await _controller.dispose();
-    setState(() {
-      _isInitialized = false;
-      _videoSource.currentIndex--;
-    });
-    await _initializePlayer();
-    _controller.play();
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -234,7 +243,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         appBar:
             _isFullScreen
                 ? null
-                : AppBar(title: Text(_videoSource.currentVideo?.name ?? '')),
+                : AppBar(title: Text(_playlist.currentVideo?.name ?? '')),
         body: Center(
           child:
               _isInitialized

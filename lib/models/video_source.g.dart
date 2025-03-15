@@ -18,19 +18,22 @@ class VideoSourceBaseAdapter extends TypeAdapter<VideoSourceBase> {
     };
     return VideoSourceBase(
       fields[0] as VideoSourceClass,
-      fields[1] as String,
+      fields[1] as VideoSourceType,
+      fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, VideoSourceBase obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.type)
+      ..write(obj.cl)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.type)
       ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
       ..write(obj.id);
   }
 
@@ -56,8 +59,7 @@ class VideoSourceLocalPathAdapter extends TypeAdapter<VideoSourceLocalPath> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return VideoSourceLocalPath(
-      fields[0] as VideoSourceClass,
-      fields[1] as String,
+      fields[2] as String,
       fields[10] as String,
     );
   }
@@ -65,14 +67,16 @@ class VideoSourceLocalPathAdapter extends TypeAdapter<VideoSourceLocalPath> {
   @override
   void write(BinaryWriter writer, VideoSourceLocalPath obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(10)
       ..write(obj.path)
       ..writeByte(0)
-      ..write(obj.type)
+      ..write(obj.cl)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.type)
       ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
       ..write(obj.id);
   }
 
@@ -98,8 +102,7 @@ class VideoSourceSmbAdapter extends TypeAdapter<VideoSourceSmb> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return VideoSourceSmb(
-      fields[0] as VideoSourceClass,
-      fields[1] as String,
+      fields[2] as String,
       fields[10] as String,
       fields[11] as String,
       fields[12] as String,
@@ -110,7 +113,7 @@ class VideoSourceSmbAdapter extends TypeAdapter<VideoSourceSmb> {
   @override
   void write(BinaryWriter writer, VideoSourceSmb obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(10)
       ..write(obj.address)
       ..writeByte(11)
@@ -120,10 +123,12 @@ class VideoSourceSmbAdapter extends TypeAdapter<VideoSourceSmb> {
       ..writeByte(13)
       ..write(obj.path)
       ..writeByte(0)
-      ..write(obj.type)
+      ..write(obj.cl)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.type)
       ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
       ..write(obj.id);
   }
 
@@ -149,8 +154,7 @@ class VideoSourceWebDavAdapter extends TypeAdapter<VideoSourceWebDav> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return VideoSourceWebDav(
-      fields[0] as VideoSourceClass,
-      fields[1] as String,
+      fields[2] as String,
       fields[10] as String,
       fields[11] as String,
       fields[12] as String,
@@ -161,7 +165,7 @@ class VideoSourceWebDavAdapter extends TypeAdapter<VideoSourceWebDav> {
   @override
   void write(BinaryWriter writer, VideoSourceWebDav obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(10)
       ..write(obj.address)
       ..writeByte(11)
@@ -171,10 +175,12 @@ class VideoSourceWebDavAdapter extends TypeAdapter<VideoSourceWebDav> {
       ..writeByte(13)
       ..write(obj.path)
       ..writeByte(0)
-      ..write(obj.type)
+      ..write(obj.cl)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.type)
       ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
       ..write(obj.id);
   }
 
@@ -200,20 +206,21 @@ class VideoSourceBaiduCloudAdapter extends TypeAdapter<VideoSourceBaiduCloud> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return VideoSourceBaiduCloud(
-      fields[0] as VideoSourceClass,
-      fields[1] as String,
+      fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, VideoSourceBaiduCloud obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.type)
+      ..write(obj.cl)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.type)
       ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
       ..write(obj.id);
   }
 
