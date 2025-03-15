@@ -21,13 +21,15 @@ class TMDBProvider implements MetadataProvider {
 
   @override
   Future<MovieMetadata?> searchMovie(String title, {int? year}) async {
-    final results = await _tmdb.v3.search.queryMovies(title, year: year);
+    final response = await _tmdb.v3.search.queryMovies(title, year: year);
 
     // 检查搜索结果是否为空
-    final resultsList = results['results'] as List?;
-    if (resultsList == null || resultsList.isEmpty) {
+    final results = response['results'] as List?;
+    if (results == null || results.isEmpty) {
       return null;
     }
+    final firstResult = results[0];
+
     // 获取第一个搜索结果的详细信息
     //final movieId = (results['results'] as List)[0]['id'];
     // final movieDetails = await _tmdb.v3.movies.getDetails(movieId);
@@ -36,11 +38,12 @@ class TMDBProvider implements MetadataProvider {
     //final credits = await _tmdb.v3.movies.getCredits(movieId);
 
     return MovieMetadata(
-      name: results['title'],
-      overview: results['overview'],
-      posterUrl: 'https://image.tmdb.org/t/p/original${results['poster_path']}',
-      rating: results['vote_average'],
-      releaseDate: results['release_date'],
+      name: firstResult['title'],
+      overview: firstResult['overview'],
+      posterUrl:
+          'https://image.tmdb.org/t/p/original${firstResult['poster_path']}',
+      rating: firstResult['vote_average'],
+      releaseDate: firstResult['release_date'],
     );
   }
 

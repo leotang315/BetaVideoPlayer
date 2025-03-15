@@ -4,14 +4,14 @@ import '../models/video_meta.dart';
 import '../models/video_file.dart';
 
 class VideoMetaProvider extends ChangeNotifier {
-  late Box<VideoMetadata> _metaBox;
+  late Box<VideoMetadata> _otherBox;
   late Box<MovieMetadata> _movieBox;
   late Box<TVShowMetadata> _tvShowBox;
 
   Future<void> init() async {
-    _metaBox = await Hive.openBox<VideoMetadata>('video_metadata');
     _movieBox = await Hive.openBox<MovieMetadata>('movie_metadata');
     _tvShowBox = await Hive.openBox<TVShowMetadata>('tvshow_metadata');
+    _otherBox = await Hive.openBox<VideoMetadata>('other_metadata');
   }
 
   // 电影相关操作
@@ -63,6 +63,10 @@ class VideoMetaProvider extends ChangeNotifier {
   }
 
   // 通用元数据操作
+  List<VideoMetadata> getAllMetadata() {
+    return [...allMovies, ...allTVShows, ..._otherBox.values];
+  }
+
   List<VideoMetadata> getMetadataByType(VideoType type) {
     switch (type) {
       case VideoType.movie:
@@ -70,10 +74,26 @@ class VideoMetaProvider extends ChangeNotifier {
       case VideoType.tvShow:
         return allTVShows;
       case VideoType.other:
-        return _metaBox.values
+        return _otherBox.values
             .where((meta) => meta.type == VideoType.other)
             .toList();
     }
+  }
+
+  List<VideoMetadata> searchMetadata(String keyword) {
+    final lowercaseKeyword = keyword.toLowerCase();
+    return [
+      ...allMovies.where(
+        (movie) =>
+            movie.name.toLowerCase().contains(lowercaseKeyword) ||
+            movie.overview.toLowerCase().contains(lowercaseKeyword),
+      ),
+      ...allTVShows.where(
+        (tvShow) =>
+            tvShow.name.toLowerCase().contains(lowercaseKeyword) ||
+            tvShow.overview.toLowerCase().contains(lowercaseKeyword),
+      ),
+    ];
   }
 
   Future<void> addMetadata(VideoMetadata metadata) async {
@@ -89,27 +109,32 @@ class VideoMetaProvider extends ChangeNotifier {
         }
         break;
       case VideoType.other:
-        await _metaBox.add(metadata);
+        await _otherBox.add(metadata);
         notifyListeners();
         break;
     }
   }
 
-  // 搜索功能
-  List<VideoMetadata> searchMetadata(String keyword) {
-    final lowercaseKeyword = keyword.toLowerCase();
-    return [
-      ...allMovies.where(
-        (movie) =>
-            movie.name.toLowerCase().contains(lowercaseKeyword) ||
-            movie.overview.toLowerCase().contains(lowercaseKeyword),
-      ),
-      ...allTVShows.where(
-        (tvShow) =>
-            tvShow.name.toLowerCase().contains(lowercaseKeyword) ||
-            tvShow.overview.toLowerCase().contains(lowercaseKeyword),
-      ),
-    ];
+  Future<void> removeMetadata(VideoMetadata metadata) async {
+    switch (metadata.type) {
+      case VideoType.movie:
+        if (metadata is MovieMetadata) {
+          await removeMovie(metadata);
+        }
+        break;
+      case VideoType.tvShow:
+        if (metadata is TVShowMetadata) {
+          await removeTVShow(metadata);
+        }
+        break;
+      case VideoType.other:
+        final index = _otherBox.values.toList().indexOf(metadata);
+        if (index != -1) {
+          await _otherBox.deleteAt(index);
+          notifyListeners();
+        }
+        break;
+    }
   }
 
   Future<void> clear() async {

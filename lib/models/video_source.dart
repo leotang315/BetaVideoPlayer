@@ -27,12 +27,15 @@ enum VideoSourceType {
 @HiveType(typeId: 2)
 class VideoSourceBase {
   @HiveField(0)
-  final VideoSourceClass type;
+  final VideoSourceClass cl;
   @HiveField(1)
-  final String name;
+  final VideoSourceType type;
   @HiveField(2)
+  final String name;
+  @HiveField(3)
   final String id;
-  VideoSourceBase(this.type, this.name) : id = Uuid().v4(); // 使用uuid生成唯一id
+  VideoSourceBase(this.cl, this.type, this.name)
+    : id = Uuid().v4(); // 使用uuid生成唯一id
 }
 
 @HiveType(typeId: 3)
@@ -40,7 +43,8 @@ class VideoSourceLocalPath extends VideoSourceBase {
   @HiveField(10)
   final String path;
 
-  VideoSourceLocalPath(super.type, super.name, this.path);
+  VideoSourceLocalPath(String name, this.path)
+    : super(VideoSourceClass.localStorage, VideoSourceType.local, name);
 }
 
 @HiveType(typeId: 4)
@@ -54,14 +58,8 @@ class VideoSourceSmb extends VideoSourceBase {
   @HiveField(13)
   final String path;
 
-  VideoSourceSmb(
-    super.type,
-    super.name,
-    this.address,
-    this.user,
-    this.password,
-    this.path,
-  );
+  VideoSourceSmb(String name, this.address, this.user, this.password, this.path)
+    : super(VideoSourceClass.networkStorage, VideoSourceType.smb, name);
 }
 
 @HiveType(typeId: 5)
@@ -76,16 +74,16 @@ class VideoSourceWebDav extends VideoSourceBase {
   final String path;
 
   VideoSourceWebDav(
-    super.type,
-    super.name,
+    String name,
     this.address,
     this.user,
     this.password,
     this.path,
-  );
+  ) : super(VideoSourceClass.networkStorage, VideoSourceType.webDav, name);
 }
 
 @HiveType(typeId: 6)
 class VideoSourceBaiduCloud extends VideoSourceBase {
-  VideoSourceBaiduCloud(super.type, super.name);
+  VideoSourceBaiduCloud(String name)
+    : super(VideoSourceClass.cloudStorage, VideoSourceType.baiduCloud, name);
 }

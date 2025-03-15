@@ -6,7 +6,6 @@ import '../../models/video_source.dart';
 import '../../providers/video_file_provider.dart';
 import '../../providers/video_meta_provider.dart';
 import '../../providers/video_source_provider.dart';
-import '../../services/import_manager.dart';
 
 class LocalForm extends StatefulWidget {
   @override
@@ -95,11 +94,7 @@ class _SMBConfigPageState extends State<LocalForm> {
       final metaProvider = context.read<VideoMetaProvider>();
 
       // 创建并保存视频源
-      VideoSourceBase source = VideoSourceLocalPath(
-        VideoSourceClass.localStorage,
-        _name,
-        _path,
-      );
+      VideoSourceBase source = VideoSourceLocalPath(_name, _path);
       await sourceProvider.addVideoSource(source);
 
       // 显示加载对话框
@@ -120,13 +115,6 @@ class _SMBConfigPageState extends State<LocalForm> {
       );
 
       try {
-        // 使用ImportManager进行导入和刮削
-        final importManager = ImportManager(
-          fileProvider: fileProvider,
-          metaProvider: metaProvider,
-        );
-        await importManager.importFromSource(source);
-
         // 关闭加载对话框
         Navigator.pop(context);
         Navigator.pop(context);

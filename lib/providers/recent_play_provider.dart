@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '../models/video_sot.dart';
+
+import '../models/video_file.dart';
 
 class RecentPlayProvider with ChangeNotifier {
   List<VideoFile> _recentPlays = [];

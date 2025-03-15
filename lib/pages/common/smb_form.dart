@@ -115,7 +115,6 @@ class _SMBFormState extends State<SMBForm> {
     if (_formKey.currentState?.validate() ?? false) {
       final provider = context.read<VideoSourceProvider>();
       VideoSourceBase source = VideoSourceSmb(
-        VideoSourceClass.networkStorage,
         _name,
         '$_address:$_port',
         _username,

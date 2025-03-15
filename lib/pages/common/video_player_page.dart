@@ -1,9 +1,11 @@
+import 'package:beta_player/providers/video_source_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
-import '../../models/video_sot.dart';
+import '../../models/video_file.dart';
+import '../../models/video_source.dart';
 import '../../providers/video_provider.dart';
 import '../../providers/recent_play_provider.dart';
 
@@ -15,7 +17,7 @@ class VideoPlayerPage extends StatefulWidget {
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
   late VideoPlayerController _controller;
   bool _isInitialized = false;
-  late VideoSource _videoSource;
+  late final VideoFile _file;
   bool _isFullScreen = false;
   double _volume = 1.0;
   final List<double> _playbackRates = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
@@ -23,13 +25,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   @override
   void initState() {
     super.initState();
-    _videoSource = context.read<VideoProvider>().currentVideo!;
     _initializePlayer();
-    if (_videoSource.currentVideo != null) {
-      context.read<RecentPlayProvider>().addRecentPlay(
-        _videoSource.currentVideo!,
-      );
-    }
+    context.read<RecentPlayProvider>().addRecentPlay(_file);
   }
 
   String _formatDuration(Duration duration) {
@@ -42,20 +39,21 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   }
 
   Future<void> _initializePlayer() async {
-    if (_videoSource.currentVideo == null) return;
+    final videoSourceProvider = context.read<VideoSourceProvider>();
+    final videoSource = videoSourceProvider.findVideoSourceByID(
+      _file.videoSourceId,
+    );
 
-    switch (_videoSource.type) {
-      case SourceType.local:
-        _controller = VideoPlayerController.file(
-          File(_videoSource.currentVideo!.path),
-        );
+    switch (videoSource!.type) {
+      case VideoSourceType.local:
+        _controller = VideoPlayerController.file(File(_file.path));
         break;
-      case SourceType.smb:
-      case SourceType.webdav:
+      case VideoSourceType.smb:
+      case VideoSourceType.webDav:
+      case VideoSourceType.baiduCloud:
         // Implementation for other sources...
         break;
     }
-
     await _controller.initialize();
     _controller.addListener(_videoListener);
     setState(() {

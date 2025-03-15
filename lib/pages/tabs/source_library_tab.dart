@@ -77,7 +77,7 @@ class SourceLibraryTab extends StatelessWidget {
 
   Widget _buildSourceItem(BuildContext context, VideoSourceBase source) {
     return ListTile(
-      leading: _getSourceIcon(source.type),
+      leading: _getSourceIcon(source.cl),
       title: Text(source.name),
       trailing: IconButton(
         icon: const Icon(Icons.more_horiz),
