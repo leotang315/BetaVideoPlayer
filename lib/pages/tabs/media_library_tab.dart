@@ -1,3 +1,4 @@
+import 'package:beta_player/providers/video_source_provider.dart';
 import 'package:beta_player/widgets/video_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +7,7 @@ import '../../models/card_info.dart';
 import '../../models/video_meta.dart';
 import '../../providers/recent_play_provider.dart';
 import '../../providers/video_meta_provider.dart';
+import '../../services/scraper_manager.dart';
 import '../common/video_player_page.dart';
 import '../common/all_recent_plays_screen.dart';
 import '../common/all_video_page.dart';
@@ -28,8 +30,21 @@ class MediaLibraryTab extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.refresh),
-              onPressed: () {
+              onPressed: () async {
                 // TODO: 实现刷新功能
+
+                final videoSources =
+                    context.read<VideoSourceProvider>().videoSources;
+                final metaProvider = context.read<VideoMetaProvider>();
+                final scraperManager = ScraperManager();
+                final metas = await scraperManager.scrapeAllSource(
+                  videoSources,
+                );
+                if (metas != null) {
+                  // 清空元数据
+                  metaProvider.clear();
+                  await metaProvider.addMetadataList(metas);
+                }
               },
             ),
           ],
@@ -339,103 +354,4 @@ class MediaLibraryTab extends StatelessWidget {
       ],
     );
   }
-
-  // Widget _buildSourcesSection(BuildContext context) {
-  //   return Column(
-  //     children: [
-  //       Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text('媒体库', style: TextStyle(fontSize: 18)),
-  //             TextButton(
-  //               onPressed:
-  //                   () => Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(builder: (_) => AllSourcesScreen()),
-  //                   ),
-  //               child: Text('全部'),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //       Consumer<VideoProvider>(
-  //         builder: (context, provider, child) {
-  //           if (provider.videos.isEmpty) {
-  //             return Center(child: Text('暂无媒体库'));
-  //           }
-  //           return ListView.builder(
-  //             shrinkWrap: true,
-  //             physics: NeverScrollableScrollPhysics(),
-  //             itemCount: provider.videos.length.clamp(0, 3),
-  //             itemBuilder: (context, index) {
-  //               final source = provider.videos[index];
-  //               return ListTile(
-  //                 leading: Icon(_getSourceIcon(source.type)),
-  //                 title: Text(source.name),
-  //                 subtitle: Text('${source.playlist.length} 个视频'),
-  //                 onTap: () {
-  //                   provider.setCurrentVideo(source);
-  //                   Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                       builder: (context) => VideoPlayerScreen(),
-  //                     ),
-  //                   );
-  //                 },
-  //               );
-  //             },
-  //           );
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildVideoCard(BuildContext context, VideoFile video) {
-  //   return Card(
-  //     margin: EdgeInsets.all(8),
-  //     child: InkWell(
-  //       onTap: () {
-  //         // 处理视频播放
-  //       },
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Container(
-  //             width: 160,
-  //             height: 120,
-  //             color: Colors.grey[800],
-  //             child: Icon(Icons.play_circle_outline, size: 48),
-  //           ),
-  //           Padding(
-  //             padding: EdgeInsets.all(8),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Text(
-  //                   video.name,
-  //                   maxLines: 2,
-  //                   overflow: TextOverflow.ellipsis,
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // IconData _getSourceIcon(SourceType type) {
-  //   switch (type) {
-  //     case SourceType.local:
-  //       return Icons.folder;
-  //     case SourceType.smb:
-  //       return Icons.computer;
-  //     case SourceType.webdav:
-  //       return Icons.cloud;
-  //   }
-  // }
 }

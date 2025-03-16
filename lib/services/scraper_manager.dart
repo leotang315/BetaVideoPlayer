@@ -5,19 +5,27 @@ import '../models/video_meta.dart';
 import '../models/video_file.dart';
 import '../models/video_source.dart';
 import './scraper_config.dart';
+import 'config_manager.dart';
 import 'file_info.dart';
+import 'logger.dart';
 import 'metadata/metadata_provider.dart';
 import 'metadata/tmdb_provider.dart';
 
 class ScraperManager {
+  static final ScraperManager _instance = ScraperManager._internal();
   final ScraperConfig config;
   final MetadataProvider metadataProvider;
 
-  ScraperManager({ScraperConfig? config, MetadataProvider? metadataProvider})
-    : config = config ?? const ScraperConfig(),
-      metadataProvider =
-          metadataProvider ??
-          TMDBProvider(apiKey: "std", readAccessToken: "std");
+  factory ScraperManager() {
+    return _instance;
+  }
+
+  ScraperManager._internal()
+    : config = const ScraperConfig(),
+      metadataProvider = TMDBProvider(
+        apiKey: ConfigManager.getTMDBConfig()['apiKey']!,
+        readAccessToken: ConfigManager.getTMDBConfig()['readAccessToken']!,
+      );
 
   Future<List<VideoMetadata>?> scrapeAllSource(
     List<VideoSourceBase> sources,
@@ -35,11 +43,13 @@ class ScraperManager {
   }
 
   Future<List<VideoMetadata>?> scrapeSource(VideoSourceBase source) async {
+    // 扫描源目录
     List<VideoFile>? videoFiles = await _scanSource(source);
 
     if (videoFiles == null || videoFiles.isEmpty) {
       return null;
     }
+
     // 使用Future.wait并发处理多个数据源
     final results = await Future.wait(
       videoFiles.map((videoFile) => _scrapeFile(videoFile)),
@@ -55,18 +65,20 @@ class ScraperManager {
   Future<List<VideoFile>?> _scanSource(VideoSourceBase source) async {
     List<VideoFile> videoFiles = [];
     switch (source) {
-      case VideoSourceLocalPath:
-        videoFiles = await _scanLocalDirectory(source as VideoSourceLocalPath);
+      case VideoSourceLocalPath localPathSource:
+        videoFiles = await _scanLocalDirectory(localPathSource);
+
         break;
-      case VideoSourceSmb:
-        final smbSource = source as VideoSourceSmb;
+      case VideoSourceSmb smbSource:
+
         // TODO: 实现SMB扫描
         break;
-      case VideoSourceWebDav:
-        final webDavSource = source as VideoSourceWebDav;
+      case VideoSourceWebDav webDavSource:
+
         // TODO: 实现WebDAV扫描
         break;
     }
+    return videoFiles;
   }
 
   Future<List<VideoFile>> _scanLocalDirectory(
@@ -114,7 +126,7 @@ class ScraperManager {
           season: info.season,
           episode: info.episode,
         );
-        tvshow?.seasons[0].episodes[0].videoFile = file;
+
         // 找到对应的季
         final targetSeason =
             tvshow?.seasons
@@ -149,6 +161,8 @@ class ScraperManager {
     } catch (e) {
       // TODO: 使用合适的日志框架替代print
       // 例如: logger.error('在线搜索出错', error: e);
+      Log.d('在线搜索出错 error: $e');
+
       return null;
     }
   }

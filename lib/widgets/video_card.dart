@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../models/card_info.dart';
+import '../services/image_cache_service.dart';
 
 class VideoCard extends StatelessWidget {
   final CardInfo cardInfo;
@@ -13,7 +14,7 @@ class VideoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 150,
-      color: Colors.red,
+
       margin: const EdgeInsets.only(right: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +27,25 @@ class VideoCard extends StatelessWidget {
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Center(child: Image.file(File(cardInfo.imgPath))),
+                  child: FutureBuilder<String>(
+                    future: ImageCacheService().getCachedImagePath(
+                      cardInfo.imgPath,
+                    ),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return const Center(child: Icon(Icons.error));
+                      }
+                      return Center(
+                        child: Image.file(
+                          File(snapshot.data!),
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 Positioned(
                   bottom: 10,

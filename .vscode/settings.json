@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "F:/workspace/client/BetaVideoPlayer/linux/flutter"
+    "cmake.sourceDirectory": "F:/workspace/client/BetaVideoPlayer/linux/flutter",
+    "cmake.ignoreCMakeListsMissing": true
 }

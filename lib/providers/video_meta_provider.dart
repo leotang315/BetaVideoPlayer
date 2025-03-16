@@ -115,6 +115,27 @@ class VideoMetaProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> addMetadataList(List<VideoMetadata> metadataList) async {
+    for (var metadata in metadataList) {
+      switch (metadata.type) {
+        case VideoType.movie:
+          if (metadata is MovieMetadata) {
+            await _movieBox.add(metadata);
+          }
+          break;
+        case VideoType.tvShow:
+          if (metadata is TVShowMetadata) {
+            await _tvShowBox.add(metadata);
+          }
+          break;
+        case VideoType.other:
+          await _otherBox.add(metadata);
+          break;
+      }
+    }
+    notifyListeners();
+  }
+
   Future<void> removeMetadata(VideoMetadata metadata) async {
     switch (metadata.type) {
       case VideoType.movie:
@@ -140,7 +161,6 @@ class VideoMetaProvider extends ChangeNotifier {
   Future<void> clear() async {
     await _movieBox.clear();
     await _tvShowBox.clear();
-    await _movieBox.close();
-    await _tvShowBox.close();
+    await _otherBox.clear();
   }
 }

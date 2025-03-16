@@ -2,6 +2,7 @@ import 'package:tmdb_api/tmdb_api.dart';
 
 import 'metadata_provider.dart';
 import '../../models/video_meta.dart';
+import '../logger.dart';
 
 class TMDBProvider implements MetadataProvider {
   final String apiKey;
@@ -53,66 +54,72 @@ class TMDBProvider implements MetadataProvider {
     int? season,
     int? episode,
   }) async {
-    final results = await _tmdb.v3.search.queryTvShows(title);
+    try {
+      Log.d('开始搜索电视剧: $title');
+      final results = await _tmdb.v3.search.queryTvShows(title);
 
-    // 检查搜索结果是否为空
-    final resultsList = results['results'] as List?;
-    if (resultsList == null || resultsList.isEmpty) {
+      // 检查搜索结果是否为空
+      final resultsList = results['results'] as List?;
+      if (resultsList == null || resultsList.isEmpty) {
+        return null;
+      }
+
+      // 获取第一个搜索结果的详细信息
+      final tvShowId = (results['results'] as List)[0]['id'];
+      final tvShowDetails = await _tmdb.v3.tv.getDetails(tvShowId);
+
+      // 构建所有季的列表
+      List<Season> seasons = [];
+      for (var seasonInfo in tvShowDetails['seasons']) {
+        // 获取每一季的详细信息
+        final seasonDetails = await _tmdb.v3.tvSeasons.getDetails(
+          tvShowId,
+          seasonInfo['season_number'],
+        );
+
+        // 构建单季数据
+        seasons.add(
+          Season(
+            seasonNumber: seasonInfo['season_number'],
+            name: seasonDetails['name'],
+            overview: seasonDetails['overview'],
+            posterUrl:
+                seasonDetails['poster_path'] != null
+                    ? 'https://image.tmdb.org/t/p/original${seasonDetails['poster_path']}'
+                    : '',
+            episodes:
+                (seasonDetails['episodes'] as List)
+                    .map(
+                      (e) => Episode(
+                        episodeNumber: e['episode_number'],
+                        name: e['name'],
+                        overview: e['overview'],
+                        stillUrl:
+                            e['still_path'] != null
+                                ? 'https://image.tmdb.org/t/p/original${e['still_path']}'
+                                : '',
+                        videoFile: null,
+                      ),
+                    )
+                    .toList(),
+          ),
+        );
+      }
+
+      // 构建电视剧元数据
+      return TVShowMetadata(
+        name: tvShowDetails['name'],
+        overview: tvShowDetails['overview'],
+        posterUrl:
+            'https://image.tmdb.org/t/p/original${tvShowDetails['poster_path']}',
+        rating: tvShowDetails['vote_average']?.toDouble(),
+        releaseDate: tvShowDetails['first_air_date'],
+        seasons: seasons,
+      );
+    } catch (e) {
+      Log.e('TMDBProvider.searchTVShow 发生错误: $e');
       return null;
     }
-
-    // 获取第一个搜索结果的详细信息
-    final tvShowId = (results['results'] as List)[0]['id'];
-    final tvShowDetails = await _tmdb.v3.tv.getDetails(tvShowId);
-
-    // 构建所有季的列表
-    List<Season> seasons = [];
-    for (var seasonInfo in tvShowDetails['seasons']) {
-      // 获取每一季的详细信息
-      final seasonDetails = await _tmdb.v3.tvSeasons.getDetails(
-        tvShowId,
-        seasonInfo['season_number'],
-      );
-
-      // 构建单季数据
-      seasons.add(
-        Season(
-          seasonNumber: seasonInfo['season_number'],
-          name: seasonDetails['name'],
-          overview: seasonDetails['overview'],
-          posterUrl:
-              seasonDetails['poster_path'] != null
-                  ? 'https://image.tmdb.org/t/p/original${seasonDetails['poster_path']}'
-                  : '',
-          episodes:
-              (seasonDetails['episodes'] as List)
-                  .map(
-                    (e) => Episode(
-                      episodeNumber: e['episode_number'],
-                      name: e['name'],
-                      overview: e['overview'],
-                      stillUrl:
-                          e['still_path'] != null
-                              ? 'https://image.tmdb.org/t/p/original${e['still_path']}'
-                              : '',
-                      videoFile: null,
-                    ),
-                  )
-                  .toList(),
-        ),
-      );
-    }
-
-    // 构建电视剧元数据
-    return TVShowMetadata(
-      name: tvShowDetails['title'],
-      overview: tvShowDetails['overview'],
-      posterUrl:
-          'https://image.tmdb.org/t/p/original${tvShowDetails['poster_path']}',
-      rating: tvShowDetails['vote_average']?.toDouble(),
-      releaseDate: tvShowDetails['first_air_date'],
-      seasons: seasons,
-    );
   }
 
   @override

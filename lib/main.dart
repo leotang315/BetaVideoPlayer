@@ -13,6 +13,9 @@ import 'providers/video_file_provider.dart';
 import 'providers/video_meta_provider.dart';
 import 'package:file_picker/file_picker.dart';
 
+import 'services/config_manager.dart';
+import 'services/image_cache_service.dart';
+
 void main() async {
   await Hive.initFlutter();
 
@@ -40,7 +43,13 @@ void main() async {
   await videoFileProvider.init();
   await videoMetaProvider.init();
 
+  // Register fvp
   fvp.registerWith();
+
+  // Initialize ConfigManager
+  WidgetsFlutterBinding.ensureInitialized();
+  await ConfigManager.initialize();
+  await ImageCacheService.initialize();
   runApp(
     MultiProvider(
       providers: [
