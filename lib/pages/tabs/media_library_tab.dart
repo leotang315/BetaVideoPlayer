@@ -64,6 +64,7 @@ class MediaLibraryTab extends StatelessWidget {
   }
 
   Widget _buildRecentPlaysSection(BuildContext context) {
+    final ScrollController _scrollController = ScrollController();
     return Column(
       children: [
         Padding(
@@ -97,12 +98,14 @@ class MediaLibraryTab extends StatelessWidget {
                   },
                 ),
                 child: Scrollbar(
+                  controller: _scrollController,
                   thickness: 6.0,
                   radius: Radius.circular(3.0),
                   thumbVisibility: true,
                   interactive: true,
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 16),
+                    controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     itemCount: provider.limitedRecentPlays.length,
@@ -317,38 +320,31 @@ class MediaLibraryTab extends StatelessWidget {
         ),
         SizedBox(
           height: 250,
-          child: ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(
-              scrollbars: true,
-              dragDevices: {
-                PointerDeviceKind.mouse,
-                PointerDeviceKind.touch,
-                PointerDeviceKind.trackpad,
-              },
-            ),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: cards.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => VideoPlayerPage(
-                              playlist: PlayList.fromVideoMeta(
-                                cards[index].meta,
-                              ),
-                            ),
-                      ),
-                    );
-                  },
-                  child: VideoCard(cards[index]),
-                );
-              },
-            ),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: cards.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => VideoPlayerPage(
+                            playlist: PlayList.fromVideoMeta(cards[index].meta),
+                          ),
+                    ),
+                  );
+                },
+                child: VideoCard(
+                  cardInfo: cards[index],
+                  width: 150,
+                  borderRadius: 15,
+                  showScore: true,
+                ),
+              );
+            },
           ),
         ),
       ],

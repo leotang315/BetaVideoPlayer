@@ -19,14 +19,14 @@ class AllVideoPage extends StatelessWidget {
         builder: (context, provider, child) {
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 100, // 每个卡片的宽度不超过 200
+              maxCrossAxisExtent: 200, // 每个卡片的宽度不超过 200
               crossAxisSpacing: 8.0,
               mainAxisSpacing: 8.0,
-              childAspectRatio: 0.75,
+              childAspectRatio: 0.6,
             ),
             itemCount: _cards.length,
             itemBuilder: (context, index) {
-              return VideoCard(_cards[index]);
+              return VideoCard(cardInfo: _cards[index]);
             },
           );
         },
