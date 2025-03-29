@@ -34,8 +34,9 @@ class VideoSourceBase {
   final String name;
   @HiveField(3)
   final String id;
-  VideoSourceBase(this.cl, this.type, this.name)
-    : id = Uuid().v4(); // 使用uuid生成唯一id
+  
+  VideoSourceBase(this.cl, this.type, this.name, {String? id})
+    : id = id ?? Uuid().v4();
 }
 
 @HiveType(typeId: 3)
@@ -43,8 +44,8 @@ class VideoSourceLocalPath extends VideoSourceBase {
   @HiveField(10)
   final String path;
 
-  VideoSourceLocalPath(String name, this.path)
-    : super(VideoSourceClass.localStorage, VideoSourceType.local, name);
+  VideoSourceLocalPath(String name, this.path, {String? id})
+    : super(VideoSourceClass.localStorage, VideoSourceType.local, name, id: id);
 }
 
 @HiveType(typeId: 4)
@@ -58,8 +59,8 @@ class VideoSourceSmb extends VideoSourceBase {
   @HiveField(13)
   final String path;
 
-  VideoSourceSmb(String name, this.address, this.user, this.password, this.path)
-    : super(VideoSourceClass.networkStorage, VideoSourceType.smb, name);
+  VideoSourceSmb(String name, this.address, this.user, this.password, this.path, {String? id})
+    : super(VideoSourceClass.networkStorage, VideoSourceType.smb, name, id: id);
 }
 
 @HiveType(typeId: 5)
@@ -73,17 +74,12 @@ class VideoSourceWebDav extends VideoSourceBase {
   @HiveField(13)
   final String path;
 
-  VideoSourceWebDav(
-    String name,
-    this.address,
-    this.user,
-    this.password,
-    this.path,
-  ) : super(VideoSourceClass.networkStorage, VideoSourceType.webDav, name);
+  VideoSourceWebDav(String name, this.address, this.user, this.password, this.path, {String? id})
+    : super(VideoSourceClass.networkStorage, VideoSourceType.webDav, name, id: id);
 }
 
 @HiveType(typeId: 6)
 class VideoSourceBaiduCloud extends VideoSourceBase {
-  VideoSourceBaiduCloud(String name)
-    : super(VideoSourceClass.cloudStorage, VideoSourceType.baiduCloud, name);
+  VideoSourceBaiduCloud(String name, {String? id})
+    : super(VideoSourceClass.cloudStorage, VideoSourceType.baiduCloud, name, id: id);
 }

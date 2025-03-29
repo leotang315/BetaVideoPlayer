@@ -20,6 +20,7 @@ class VideoSourceBaseAdapter extends TypeAdapter<VideoSourceBase> {
       fields[0] as VideoSourceClass,
       fields[1] as VideoSourceType,
       fields[2] as String,
+      id: fields[3] as String?,
     );
   }
 
@@ -61,6 +62,7 @@ class VideoSourceLocalPathAdapter extends TypeAdapter<VideoSourceLocalPath> {
     return VideoSourceLocalPath(
       fields[2] as String,
       fields[10] as String,
+      id: fields[3] as String?,
     );
   }
 
@@ -107,6 +109,7 @@ class VideoSourceSmbAdapter extends TypeAdapter<VideoSourceSmb> {
       fields[11] as String,
       fields[12] as String,
       fields[13] as String,
+      id: fields[3] as String?,
     );
   }
 
@@ -159,6 +162,7 @@ class VideoSourceWebDavAdapter extends TypeAdapter<VideoSourceWebDav> {
       fields[11] as String,
       fields[12] as String,
       fields[13] as String,
+      id: fields[3] as String?,
     );
   }
 
@@ -207,6 +211,7 @@ class VideoSourceBaiduCloudAdapter extends TypeAdapter<VideoSourceBaiduCloud> {
     };
     return VideoSourceBaiduCloud(
       fields[2] as String,
+      id: fields[3] as String?,
     );
   }
 
