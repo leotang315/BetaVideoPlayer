@@ -27,6 +27,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   late final PlayList _playlist;
   bool _isInitialized = false;
   bool _isFullScreen = false;
+  bool _showControls = true;
+  bool _showVolumeSlider = false;
   double _volume = 1.0;
   final List<double> _playbackRates = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
 
@@ -91,6 +93,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         break;
     }
     await _controller.initialize();
+    _controller.setVolume(_volume); // 设置初始音量
     _controller.addListener(_videoListener);
     setState(() {
       _isInitialized = true;
@@ -117,119 +120,204 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     });
   }
 
-  Widget _buildControls() {
-    return AnimatedOpacity(
-      opacity: _controller.value.isPlaying ? 0.0 : 1.0,
-      duration: Duration(milliseconds: 300),
+  Widget _buildTopControls() {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
       child: Container(
-        color: Colors.black54,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.black54, Colors.transparent],
+          ),
+        ),
+        child: Row(
           children: [
-            // Progress bar and time
-            Row(
-              children: [
-                Text(_formatDuration(_controller.value.position)),
-                Expanded(
-                  child: VideoProgressIndicator(
-                    _controller,
-                    allowScrubbing: true,
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                  ),
-                ),
-                Text(_formatDuration(_controller.value.duration)),
-              ],
+            IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                if (_isFullScreen) {
+                  _toggleFullScreen();
+                } else {
+                  Navigator.of(context).pop();
+                }
+              },
             ),
-            // Control buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.skip_previous),
-                  onPressed: _playlist.hasPrevious ? _playPrevious : null,
+            Expanded(
+              child: Text(
+                _playlist.currentVideo?.name ?? '',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-                IconButton(
-                  icon: Icon(
-                    _controller.value.isPlaying
-                        ? Icons.pause
-                        : Icons.play_arrow,
-                  ),
-                  onPressed:
-                      () => setState(() {
-                        _controller.value.isPlaying
-                            ? _controller.pause()
-                            : _controller.play();
-                      }),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgressBar() {
+    return Container(
+      height: 4,
+      child: VideoProgressIndicator(
+        _controller,
+        allowScrubbing: true,
+        colors: VideoProgressColors(
+          playedColor: Colors.blue,
+          bufferedColor: Colors.grey.shade600,
+          backgroundColor: Colors.grey.shade800,
+        ),
+        padding: EdgeInsets.zero,
+      ),
+    );
+  }
+
+  Widget _buildBottomControls() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          colors: [Colors.black54, Colors.transparent],
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildProgressBar(),
+          SizedBox(height: 8),
+          Row(
+            children: [
+              // 左侧控制
+              Text(
+                '${_formatDuration(_controller.value.position)} / ${_formatDuration(_controller.value.duration)}',
+                style: TextStyle(color: Colors.white),
+              ),
+              Spacer(),
+
+              // 中间播放控制按钮组
+              IconButton(
+                icon: Icon(Icons.skip_previous, color: Colors.white),
+                onPressed: _playlist.hasPrevious ? _playPrevious : null,
+              ),
+              IconButton(
+                icon: Icon(
+                  _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.white,
                 ),
-                IconButton(
-                  icon: Icon(Icons.skip_next),
-                  onPressed: _playlist.hasNext ? _playNext : null,
-                ),
-                // Volume control
-                Row(
+                onPressed:
+                    () => setState(() {
+                      _controller.value.isPlaying
+                          ? _controller.pause()
+                          : _controller.play();
+                    }),
+              ),
+              IconButton(
+                icon: Icon(Icons.skip_next, color: Colors.white),
+                onPressed: _playlist.hasNext ? _playNext : null,
+              ),
+
+              Spacer(),
+              // 右侧控制
+              Container(
+                width: 150, // 调整容器宽度以适应滑块
+                child: Row(
                   children: [
-                    Icon(Icons.volume_up),
-                    SizedBox(
-                      width: 100,
-                      child: Slider(
-                        value: _volume,
-                        onChanged: (value) {
-                          setState(() {
-                            _volume = value;
-                            _controller.setVolume(_volume);
-                          });
-                        },
+                    IconButton(
+                      icon: Icon(
+                        _volume > 0 ? Icons.volume_up : Icons.volume_off,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (_volume > 0) {
+                            _volume = 0;
+                          } else {
+                            _volume = 1.0;
+                          }
+                          _controller.setVolume(_volume);
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: SliderTheme(
+                        data: SliderThemeData(
+                          thumbColor: Colors.white,
+                          activeTrackColor: Colors.white,
+                          inactiveTrackColor: Colors.white.withOpacity(0.3),
+                          trackHeight: 2.0,
+                          thumbShape: RoundSliderThumbShape(
+                            enabledThumbRadius: 6.0,
+                          ),
+                          overlayShape: RoundSliderOverlayShape(
+                            overlayRadius: 12.0,
+                          ),
+                        ),
+                        child: Slider(
+                          value: _volume,
+                          min: 0.0,
+                          max: 1.0,
+                          onChanged: (value) {
+                            setState(() {
+                              _volume = value;
+                              _controller.setVolume(_volume);
+                            });
+                          },
+                        ),
                       ),
                     ),
                   ],
                 ),
-                // Playback speed
-                PopupMenuButton<double>(
-                  icon: Icon(Icons.speed),
-                  onSelected: (speed) {
-                    setState(() {
-                      _controller.setPlaybackSpeed(speed);
-                    });
-                  },
-                  itemBuilder: (context) {
-                    return _playbackRates.map((rate) {
-                      return PopupMenuItem(
-                        value: rate,
-                        child: Text('${rate}x'),
-                        enabled: _controller.value.playbackSpeed != rate,
-                      );
-                    }).toList();
-                  },
+              ),
+              IconButton(
+                icon: Icon(
+                  _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+                  color: Colors.white,
                 ),
-                // Settings
-                PopupMenuButton(
-                  icon: Icon(Icons.settings),
-                  itemBuilder:
-                      (context) => [
-                        PopupMenuItem(
-                          child: Text('画质设置'),
-                          onTap: () {
-                            // Implement quality settings
-                          },
-                        ),
-                        PopupMenuItem(
-                          child: Text('字幕设置'),
-                          onTap: () {
-                            // Implement subtitle settings
-                          },
-                        ),
-                      ],
+                onPressed: _toggleFullScreen,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildControls() {
+    return AnimatedOpacity(
+      opacity: _showControls ? 1.0 : 0.0,
+      duration: Duration(milliseconds: 300),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          _buildTopControls(),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: _buildBottomControls(),
+          ),
+          // 中间的播放按钮
+          if (!_controller.value.isPlaying)
+            Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black38,
+                  shape: BoxShape.circle,
                 ),
-                IconButton(
-                  icon: Icon(
-                    _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
-                  ),
-                  onPressed: _toggleFullScreen,
-                ),
-              ],
+                padding: EdgeInsets.all(8),
+                child: Icon(Icons.play_arrow, color: Colors.white, size: 48),
+              ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -245,36 +333,30 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         return true;
       },
       child: Scaffold(
-        appBar:
-            _isFullScreen
-                ? null
-                : AppBar(title: Text(_playlist.currentVideo?.name ?? '')),
-        body: Center(
-          child:
-              _isInitialized
-                  ? GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (_controller.value.isPlaying) {
-                          _controller.pause();
-                        } else {
-                          _controller.play();
-                        }
-                      });
-                    },
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        AspectRatio(
+        backgroundColor: Colors.black,
+        appBar: null, // 移除AppBar
+        body:
+            _isInitialized
+                ? GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _showControls = !_showControls;
+                    });
+                  },
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Center(
+                        child: AspectRatio(
                           aspectRatio: _controller.value.aspectRatio,
                           child: VideoPlayer(_controller),
                         ),
-                        _buildControls(),
-                      ],
-                    ),
-                  )
-                  : CircularProgressIndicator(),
-        ),
+                      ),
+                      _buildControls(),
+                    ],
+                  ),
+                )
+                : Center(child: CircularProgressIndicator()),
       ),
     );
   }
