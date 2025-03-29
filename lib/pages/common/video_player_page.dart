@@ -1,4 +1,5 @@
 import 'package:beta_player/providers/video_source_provider.dart';
+import 'package:beta_player/services/metadata/metadata_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
@@ -9,6 +10,8 @@ import '../../models/video_file.dart';
 import '../../models/video_source.dart';
 
 import '../../providers/recent_play_provider.dart';
+import '../../providers/video_file_provider.dart';
+import '../../providers/video_meta_provider.dart';
 
 class VideoPlayerPage extends StatefulWidget {
   final PlayList playlist;
@@ -33,7 +36,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     _playlist = widget.playlist;
     _initializePlayer();
 
-    context.read<RecentPlayProvider>().addRecentPlay(_playlist.currentVideo!);
+    // context.read<RecentPlayProvider>().addRecentPlay(_playlist.currentVideo!);
   }
 
   Future<void> _playNext() async {
@@ -69,6 +72,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   Future<void> _initializePlayer() async {
     final videoSourceProvider = context.read<VideoSourceProvider>();
+    final videoMetaProvider = context.read<VideoMetaProvider>();
+    final videoFileProvider = context.read<VideoFileProvider>();
     final videoSource = videoSourceProvider.findVideoSourceByID(
       _playlist.currentVideo!.videoSourceId,
     );

@@ -42,7 +42,7 @@ class MediaLibraryTab extends StatelessWidget {
                 );
                 if (metas != null) {
                   // 清空元数据
-                  metaProvider.clear();
+                  await metaProvider.clear();
                   await metaProvider.addMetadataList(metas);
                 }
               },
@@ -162,7 +162,7 @@ class MediaLibraryTab extends StatelessWidget {
                 .map(
                   (movie) => CardInfo(
                     title: movie.name,
-                    subtitle: "subtitle",
+                    subtitle: movie.releaseDate,
                     imgPath: movie.posterUrl,
                     score: movie.rating,
                     meta: movie,
@@ -325,7 +325,11 @@ class MediaLibraryTab extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: cards.length,
             itemBuilder: (context, index) {
-              return GestureDetector(
+              return VideoCard(
+                cardInfo: cards[index],
+                width: 150,
+                borderRadius: 15,
+                showScore: true,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -337,12 +341,6 @@ class MediaLibraryTab extends StatelessWidget {
                     ),
                   );
                 },
-                child: VideoCard(
-                  cardInfo: cards[index],
-                  width: 150,
-                  borderRadius: 15,
-                  showScore: true,
-                ),
               );
             },
           ),

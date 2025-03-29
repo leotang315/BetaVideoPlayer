@@ -14,17 +14,19 @@ class VideoCard extends StatelessWidget {
   final bool showScore;
   final TextStyle? titleStyle;
   final TextStyle? subtitleStyle;
+  final VoidCallback? onTap; // 添加点击回调
 
   const VideoCard({
     super.key,
     required this.cardInfo,
     this.width,
     this.height,
-    this.borderRadius = 8.0,
+    this.borderRadius = 5.0,
     this.margin = const EdgeInsets.all(8.0),
     this.showScore = true,
     this.titleStyle,
     this.subtitleStyle,
+    this.onTap, // 添加到构造函数
   });
 
   @override
@@ -71,31 +73,39 @@ class VideoCard extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(borderRadius),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
+        GestureDetector(
+          onTap: onTap,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(borderRadius),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
-            child: FutureBuilder<String>(
-              future: ImageCacheService().getCachedImagePath(cardInfo.imgPath),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return const Center(child: Icon(Icons.error));
-                }
-                return Image.file(File(snapshot.data!), fit: BoxFit.cover);
-              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(borderRadius),
+                child: FutureBuilder<String>(
+                  future: ImageCacheService().getCachedImagePath(
+                    cardInfo.imgPath,
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return const Center(child: Icon(Icons.error));
+                    }
+                    return Image.file(File(snapshot.data!), fit: BoxFit.cover);
+                  },
+                ),
+              ),
             ),
           ),
         ),
