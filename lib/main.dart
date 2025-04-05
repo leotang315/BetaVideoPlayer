@@ -17,6 +17,8 @@ import 'services/config_manager.dart';
 import 'services/image_cache_service.dart';
 
 void main() async {
+  // Initialize ConfigManager
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
   // Register adapters
@@ -46,8 +48,6 @@ void main() async {
   // Register fvp
   fvp.registerWith();
 
-  // Initialize ConfigManager
-  WidgetsFlutterBinding.ensureInitialized();
   await ConfigManager.initialize();
   await ImageCacheService.initialize();
   runApp(

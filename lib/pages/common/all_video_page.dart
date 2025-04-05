@@ -13,20 +13,36 @@ class AllVideoPage extends StatelessWidget {
   List<CardInfo> _cards;
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isTablet = screenWidth > 600;
+    
     return Scaffold(
-      appBar: AppBar(title: Center(child: Text(_category))),
+      appBar: AppBar(
+        title: Center(child: Text(_category)),
+        // 在手机上使用更紧凑的布局
+        toolbarHeight: isTablet ? kToolbarHeight : 45,
+      ),
       body: Consumer<VideoMetaProvider>(
         builder: (context, provider, child) {
-          return GridView.builder(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200, // 每个卡片的宽度不超过 200
-              crossAxisSpacing: 8.0,
-              mainAxisSpacing: 8.0,
-              childAspectRatio: 0.6,
-            ),
-            itemCount: _cards.length,
-            itemBuilder: (context, index) {
-              return VideoCard(cardInfo: _cards[index]);
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              // 根据屏幕宽度动态计算卡片数量和大小
+              final crossAxisCount = isTablet ? 4 : 2;
+              final spacing = isTablet ? 12.0 : 8.0;
+              
+              return GridView.builder(
+                padding: EdgeInsets.all(spacing),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: spacing,
+                  mainAxisSpacing: spacing,
+                  childAspectRatio: 0.6,
+                ),
+                itemCount: _cards.length,
+                itemBuilder: (context, index) {
+                  return VideoCard(cardInfo: _cards[index]);
+                },
+              );
             },
           );
         },

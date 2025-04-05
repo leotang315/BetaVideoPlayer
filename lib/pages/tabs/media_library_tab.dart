@@ -328,7 +328,7 @@ class MediaLibraryTab extends StatelessWidget {
               return VideoCard(
                 cardInfo: cards[index],
                 width: 150,
-                borderRadius: 15,
+                borderRadius: 5,
                 showScore: true,
                 onTap: () {
                   Navigator.push(

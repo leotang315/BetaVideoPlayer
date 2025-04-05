@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:ini/ini.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ConfigManager {
   static late Config _config;
@@ -12,10 +13,7 @@ class ConfigManager {
       final defaultConfig = await rootBundle.loadString('assets/config.ini');
 
       // 获取应用数据目录
-      final appDataDir = path.join(
-        Platform.environment['APPDATA'] ?? '',
-        'BetaPlayer',
-      );
+      final appDataDir = await _getAppDataDir();
 
       // 确保目录存在
       await Directory(appDataDir).create(recursive: true);
@@ -35,6 +33,19 @@ class ConfigManager {
     } catch (e) {
       print('配置加载失败: $e');
       rethrow;
+    }
+  }
+
+  // 根据平台获取适当的应用数据目录
+  static Future<String> _getAppDataDir() async {
+    if (Platform.isAndroid) {
+      final dir = await getApplicationDocumentsDirectory();
+      return path.join(dir.path, 'BetaPlayer');
+    } else {
+      return path.join(
+        Platform.environment['APPDATA'] ?? '',
+        'BetaPlayer',
+      );
     }
   }
 
