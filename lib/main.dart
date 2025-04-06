@@ -15,6 +15,7 @@ import 'package:file_picker/file_picker.dart';
 
 import 'services/config_manager.dart';
 import 'services/image_cache_service.dart';
+import 'package:smb_connect/smb_connect.dart';
 
 void main() async {
   // Initialize ConfigManager

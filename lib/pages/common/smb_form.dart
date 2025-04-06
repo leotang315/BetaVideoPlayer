@@ -1,3 +1,5 @@
+import 'package:beta_player/pages/file_browser_page.dart';
+import 'package:beta_player/services/file_source_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -111,20 +113,76 @@ class _SMBFormState extends State<SMBForm> {
     );
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final provider = context.read<VideoSourceProvider>();
-      VideoSourceBase source = VideoSourceSmb(
-        _name,
-        '$_address:$_port',
-        _username,
-        _password,
-        _path,
-      );
+      try {
+        // 显示加载指示器
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder:
+              (context) => const Center(child: CircularProgressIndicator()),
+        );
 
-      provider.addVideoSource(source);
-      Navigator.pop(context);
-      Navigator.pop(context); // 返回到资源库页面
+        // 创建临时 source 用于测试连接
+        final tempSource = VideoSourceSmb(
+          _name,
+          '$_address:$_port',
+          _username,
+          _password,
+          '/',
+        );
+
+        // 测试连接
+        final fileManager = SmbFileManager(
+          host: _address,
+          username: _username,
+          password: _password,
+        );
+        await fileManager.list('/'); // 如果连接失败会抛出异常
+
+        // 关闭加载指示器
+        Navigator.pop(context);
+
+        // 打开文件浏览器选择路径
+        final selectedPath = await Navigator.push<String>(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => FileBrowserPage(
+                  source: tempSource,
+                  fileManager: fileManager,
+                ),
+          ),
+        );
+
+        if (selectedPath != null) {
+          // 创建最终的 source 并添加到 provider
+          final provider = context.read<VideoSourceProvider>();
+          final source = VideoSourceSmb(
+            _name,
+            '$_address:$_port',
+            _username,
+            _password,
+            selectedPath,
+          );
+
+          provider.addVideoSource(source);
+          Navigator.pop(context); // 返回到上一页
+        }
+      } catch (e) {
+        // 关闭加载指示器（如果还在显示）
+        if (context.mounted) {
+          Navigator.of(context).popUntil((route) => route is! DialogRoute);
+        }
+
+        // 显示错误信息
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('连接失败: $e')));
+        }
+      }
     }
   }
 }

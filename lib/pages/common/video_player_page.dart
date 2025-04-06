@@ -8,6 +8,7 @@ import 'dart:io';
 import '../../models/play_list.dart';
 import '../../models/video_file.dart';
 import '../../models/video_source.dart';
+import 'dart:convert'; // 添加这行在文件顶部其他 import 语句旁
 
 import '../../providers/recent_play_provider.dart';
 import '../../providers/video_file_provider.dart';
@@ -92,6 +93,15 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         // Implementation for other sources...
         break;
     }
+
+    // _controller = VideoPlayerController.networkUrl(
+    //   Uri.parse("http://127.0.0.1:5244/dav/D:/video/1.mp4"),
+    //   httpHeaders: {
+    //     'Authorization': 'Basic ${base64.encode(utf8.encode('leo:123'))}',
+    //   },
+    //   // Uri.parse("http://192.168.1.5:8080/files/video/1.mp4"),
+    // );
+
     await _controller.initialize();
     _controller.setVolume(_volume); // 设置初始音量
     _controller.addListener(_videoListener);

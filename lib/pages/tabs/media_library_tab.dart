@@ -127,32 +127,39 @@ class MediaLibraryTab extends StatelessWidget {
   }
 
   Widget _buildMoviesSection(BuildContext context) {
-    // final show2 = [
-    //   CardInfo(
-    //     title: '动物王国大冒险',
-    //     subtitle: '共2季',
-    //     imgPath: 'assets/logo.webp',
-    //     score: 7.5,
-    //   ),
-    //   CardInfo(
-    //     title: '开口说英语',
-    //     subtitle: '共5季',
-    //     imgPath: 'assets/logo.webp',
-    //     score: 8.8,
-    //   ),
-    //   CardInfo(
-    //     title: '小鼠波波',
-    //     subtitle: '共1季',
-    //     imgPath: 'assets/logo.webp',
-    //     score: 7.5,
-    //   ),
-    //   CardInfo(
-    //     title: 'DIDI狗的一天',
-    //     subtitle: '共1季',
-    //     imgPath: 'assets/logo.webp',
-    //     score: 8.8,
-    //   ),
-    // ];
+    final show2 = [
+      CardInfo(
+        title: '动物王国大冒险',
+        subtitle: '共2季',
+        imgPath: 'assets/logo.webp',
+        score: 7.5,
+        meta: MovieMetadata(
+          name: '动物王国大冒险',
+          releaseDate: '2023',
+          posterUrl: 'assets/logo.webp',
+          rating: 7.5,
+          overview: '',
+        ),
+      ),
+      // CardInfo(
+      //   title: '开口说英语',
+      //   subtitle: '共5季',
+      //   imgPath: 'assets/logo.webp',
+      //   score: 8.8,
+      // ),
+      // CardInfo(
+      //   title: '小鼠波波',
+      //   subtitle: '共1季',
+      //   imgPath: 'assets/logo.webp',
+      //   score: 7.5,
+      // ),
+      // CardInfo(
+      //   title: 'DIDI狗的一天',
+      //   subtitle: '共1季',
+      //   imgPath: 'assets/logo.webp',
+      //   score: 8.8,
+      // ),
+    ];
     return Consumer<VideoMetaProvider>(
       builder: (context, provider, child) {
         final movies =

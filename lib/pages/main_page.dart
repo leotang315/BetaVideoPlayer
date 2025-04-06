@@ -1,7 +1,10 @@
+import 'package:beta_player/models/video_source.dart';
+import 'package:beta_player/services/file_source_manager.dart';
 import 'package:flutter/material.dart';
 import 'tabs/media_library_tab.dart';
 import 'tabs/source_library_tab.dart';
 import 'tabs/profile_tab.dart';
+import 'file_browser_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -10,7 +13,14 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
-  final _pages = [MediaLibraryTab(), SourceLibraryTab(), ProfileTab()];
+  final _pages = [
+    MediaLibraryTab(),
+    SourceLibraryTab(),
+    FileBrowserPage(
+      source: VideoSourceLocalPath("testName", "D:\\video"),
+      fileManager: LocalFileManager(),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {

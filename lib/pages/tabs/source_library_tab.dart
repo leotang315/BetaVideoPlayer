@@ -37,19 +37,19 @@ class SourceLibraryTab extends StatelessWidget {
           return ListView(
             children: [
               if (localSources.isNotEmpty) ...[
-                _buildSourceTypeHeader('本地目录'),
+                _buildSourceTypeHeader('本地存储'),
                 ...localSources.map(
                   (source) => _buildSourceItem(context, source),
                 ),
               ],
               if (networkSources.isNotEmpty) ...[
-                _buildSourceTypeHeader('百度网盘'),
+                _buildSourceTypeHeader('网络存储'),
                 ...networkSources.map(
                   (source) => _buildSourceItem(context, source),
                 ),
               ],
               if (cloudSources.isNotEmpty) ...[
-                _buildSourceTypeHeader('百度网盘'),
+                _buildSourceTypeHeader('云端存储'),
                 ...cloudSources.map(
                   (source) => _buildSourceItem(context, source),
                 ),
