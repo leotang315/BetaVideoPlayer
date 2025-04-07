@@ -5,7 +5,7 @@ import 'package:beta_player/models/file_item.dart';
 
 class FileBrowserPage extends StatefulWidget {
   final VideoSourceBase source;
-  final FileSourceManager fileManager;
+  final FileManager fileManager;
   final String? initialPath; // 添加初始路径参数
 
   const FileBrowserPage({

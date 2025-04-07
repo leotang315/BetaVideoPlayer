@@ -39,7 +39,7 @@ dependencies:
   video_player: ^2.8.1
   file_picker: ^9.0.1
   path_provider: ^2.1.5
-  webdav_client: ^1.2.1
+  webdav_client: ^1.2.2
   permission_handler: ^11.2.1
   provider: ^6.1.1
   fvp: ^0.29.0
