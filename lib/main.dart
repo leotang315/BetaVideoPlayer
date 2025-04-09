@@ -1,4 +1,5 @@
 import 'package:beta_player/providers/recent_play_provider.dart';
+import 'package:beta_player/services/file_source_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fvp/fvp.dart' as fvp;
@@ -18,6 +19,14 @@ import 'services/image_cache_service.dart';
 import 'package:smb_connect/smb_connect.dart';
 
 void main() async {
+  // 测试连接
+  final fileManager = SmbFileManager(
+    host: "192.168.1.5",
+    username: "Test",
+    password: "123",
+  );
+  var aaa = await fileManager.list('/video'); // 如果连接失败会抛出异常
+
   // Initialize ConfigManager
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();

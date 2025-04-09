@@ -137,20 +137,6 @@ class _FileBrowserPageState extends State<FileBrowserPage> {
     }
   }
 
-  void _navigateToDirectory(String path) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (context) => FileBrowserPage(
-              source: widget.source,
-              fileManager: widget.fileManager,
-              initialPath: path, // 使用新路径
-            ),
-      ),
-    );
-  }
-
   void _toggleSelectItem(String path) {
     setState(() {
       if (selectedPaths.contains(path)) {
@@ -216,9 +202,21 @@ class _FileBrowserPageState extends State<FileBrowserPage> {
     }
   }
 
-  // 添加确认选择的方法
+  void _navigateToDirectory(String path) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => FileBrowserPage(
+              source: widget.source,
+              fileManager: widget.fileManager,
+              initialPath: path, // 使用新路径
+            ),
+      ),
+    );
+  }
+
   void _confirmSelection() {
-    // 返回选中的路径列表
     Navigator.pop(context, selectedPaths);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:beta_player/pages/file_browser_page.dart';
+import 'package:beta_player/pages/file_browser_page2.dart';
 import 'package:beta_player/services/file_source_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -139,37 +140,49 @@ class _SMBFormState extends State<SMBForm> {
           username: _username,
           password: _password,
         );
-        await fileManager.list('/'); // 如果连接失败会抛出异常
+        // await fileManager.list('/'); // 如果连接失败会抛出异常
 
         // 关闭加载指示器
         Navigator.pop(context);
 
-        // 打开文件浏览器选择路径
-        final selectedPath = await Navigator.push<String>(
+        await Navigator.push<String>(
           context,
           MaterialPageRoute(
             builder:
-                (context) => FileBrowserPage(
+                (context) => FileBrowserPage2(
                   source: tempSource,
                   fileManager: fileManager,
+                  initialPath: '/video',
                 ),
           ),
         );
 
-        if (selectedPath != null) {
-          // 创建最终的 source 并添加到 provider
-          final provider = context.read<VideoSourceProvider>();
-          final source = VideoSourceSmb(
-            _name,
-            '$_address:$_port',
-            _username,
-            _password,
-            selectedPath,
-          );
+        // // 打开文件浏览器选择路径
+        // final selectedPath = await Navigator.push<String>(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder:
+        //         (context) => FileBrowserPage(
+        //           source: tempSource,
+        //           fileManager: fileManager,
+        //         ),
+        //   ),
+        // );
 
-          provider.addVideoSource(source);
-          Navigator.pop(context); // 返回到上一页
-        }
+        // if (selectedPath != null) {
+        //   // 创建最终的 source 并添加到 provider
+        //   final provider = context.read<VideoSourceProvider>();
+        //   final source = VideoSourceSmb(
+        //     _name,
+        //     '$_address:$_port',
+        //     _username,
+        //     _password,
+        //     selectedPath,
+        //   );
+
+        //   provider.addVideoSource(source);
+        //Navigator.pop(context); // 返回到上一页
+        //}
       } catch (e) {
         // 关闭加载指示器（如果还在显示）
         if (context.mounted) {
